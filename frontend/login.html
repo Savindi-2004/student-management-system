@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Log in — Student Manager</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-head">
+      <h1>Welcome back</h1>
+      <p>Log in as an Admin or a Student to continue.</p>
+    </div>
+
+    <div id="formMsg" class="form-msg"></div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="loginBtn">Log in</button>
+    </form>
+
+    <p class="auth-foot">
+      Don't have an account? <a href="register.html" style="color:var(--brass); font-weight:600;">Register as a student</a>
+    </p>
+    <p class="auth-foot"><a href="index.html">&larr; Back to home</a></p>
+  </div>
+</div>
+
+<script src="js/login.js"></script>
+</body>
+</html>

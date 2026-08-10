@@ -1,0 +1,188 @@
+/* ==========================================================================
+   EduPortal Home Page — self-contained styles (scoped, doesn't affect
+   the login/register/dashboard pages which keep their own theme).
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+.ep {
+  --ep-bg: #0c1526;
+  --ep-bg-soft: #101c33;
+ --ep-card: rgba(19, 31, 56, 0.7);
+  --ep-border: rgba(255,255,255,0.08);
+  --ep-text: #eef2f9;
+  --ep-text-soft: #98a3bd;
+  --ep-blue: #55c1f0;
+  --ep-blue-soft: #8fd6f7;
+  --ep-grad: linear-gradient(135deg, #6f8cfb 0%, #8f6bf6 100%);
+  --ep-font-head: 'Poppins', sans-serif;
+  --ep-font-body: 'Inter', sans-serif;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--ep-bg); 
+  color: var(--ep-text);
+  font-family: var(--ep-font-body);
+  scroll-behavior: smooth;
+}
+
+.ep * { box-sizing: border-box; }
+.ep h1, .ep h2, .ep h3, .ep h4 { font-family: var(--ep-font-head); margin: 0; color: #fff; }
+.ep a { text-decoration: none; color: inherit; }
+.ep .ep-container { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+
+/* ---------- Navbar ---------- */
+/* Solid (non-blurred, non-transparent) background so nothing from the
+   section scrolling underneath can bleed through the sticky navbar. */
+.ep-navbar {
+  position: sticky; top: 0; z-index: 30;
+  background: #0c1526;
+  border-bottom: 1px solid var(--ep-border);
+  isolation: isolate;
+}
+.ep-navbar .ep-container { display: flex; align-items: center; justify-content: space-between; height: 76px; }
+.ep-brand { display: flex; align-items: center; gap: 10px; font-family: var(--ep-font-head); font-weight: 700; font-size: 1.25rem; color: #fff; }
+.ep-brand svg { width: 30px; height: 30px; flex-shrink: 0; }
+.ep-nav-links { display: flex; align-items: center; gap: 34px; }
+.ep-nav-links a {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.95rem; font-weight: 500; color: rgba(255,255,255,0.78);
+  background: none; border: none; cursor: pointer; font-family: var(--ep-font-body);
+  transition: color .15s ease;
+}
+.ep-nav-links a:hover { color: #fff; }
+.ep-nav-links a svg { width: 14px; height: 14px; opacity: 0.7; }
+.ep-nav-actions { display: flex; align-items: center; gap: 14px; }
+
+.ep-btn { display: inline-flex; align-items: center; justify-content: center; padding: 11px 24px; border-radius: 999px; font-weight: 600; font-size: 0.92rem; cursor: pointer; transition: all .15s ease; border: 1px solid transparent; font-family: var(--ep-font-body); }
+.ep-btn-outline { background: transparent; border-color: rgba(255,255,255,0.28); color: #fff; }
+.ep-btn-outline:hover { border-color: var(--ep-blue); color: var(--ep-blue-soft); }
+.ep-btn-solid { background: var(--ep-blue); color: #04202f; }
+.ep-btn-solid:hover { background: var(--ep-blue-soft); }
+.ep-btn-gradient { background: var(--ep-grad); color: #fff; box-shadow: 0 8px 24px rgba(111,140,251,0.35); }
+.ep-btn-gradient:hover { filter: brightness(1.08); }
+.ep-btn-line { background: transparent; border: 1.5px solid rgba(255,255,255,0.35); color: #fff; }
+.ep-btn-line:hover { border-color: #fff; }
+
+/* ---------- Hero ---------- */
+.ep-hero { position: relative; padding: 120px 0 140px; overflow: hidden; isolation: isolate;z-index: 1; 
+  min-height: calc(100vh - 76px);
+  display: flex; align-items: center;
+  background: transparent;
+}
+.ep-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(rgba(12,21,38,0.75), rgba(12,21,38,0.85)),
+    radial-gradient(700px 400px at 88% 15%, rgba(85,193,240,0.14), transparent 60%),
+    radial-gradient(600px 500px at 10% 90%, rgba(143,107,246,0.10), transparent 60%);
+  pointer-events: none;
+}
+.ep-hero .ep-container { position: relative; z-index: 1; }
+.ep-pill {
+  display: inline-block; font-size: 0.8rem; font-weight: 700; color: #04202f;
+  background: linear-gradient(90deg, var(--ep-blue), var(--ep-blue-soft));
+  padding: 8px 18px; border-radius: 999px; margin-bottom: 26px;
+}
+.ep-hero h1 { font-size: 3.4rem; line-height: 1.15; max-width: 780px; font-weight: 800; }
+.ep-hero p.ep-lead { font-size: 1.1rem; color: var(--ep-text-soft); max-width: 600px; margin: 24px 0 36px; line-height: 1.7; }
+.ep-hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* ---------- Section shell ---------- */
+/* isolation + solid background stop content from an adjacent section
+   flashing into view at the top/bottom edge while scrolling. */
+.ep-section { 
+  padding: 100px 0; 
+  scroll-margin-top: 76px; 
+  position: relative; 
+  isolation: isolate; 
+  z-index: 1;
+  /* Home (Hero) background style eka ekin ekata match kara */
+  background:
+    linear-gradient(rgba(12,21,38,0.75), rgba(12,21,38,0.85)),
+    radial-gradient(700px 400px at 88% 15%, rgba(85,193,240,0.14), transparent 60%),
+    radial-gradient(600px 500px at 10% 90%, rgba(143,107,246,0.10), transparent 60%);
+    pointer-events: none;
+  }
+.ep-section-head { text-align: center; max-width: 640px; margin: 0 auto 48px; }
+.ep-section-head h2 { font-size: 2.4rem; color: var(--ep-blue-soft); font-weight: 800; }
+.ep-section-head p { color: var(--ep-text-soft); margin-top: 14px; font-size: 1.02rem; }
+
+/* ---------- Courses / faculty tabs ---------- */
+.ep-tabs { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 46px; }
+.ep-tab {
+  padding: 13px 26px; border-radius: 999px; font-weight: 600; font-size: 0.95rem;
+  background: rgba(12, 21, 38, 0.5); border: 1px solid var(--ep-border); color: rgba(255,255,255,0.75);
+  cursor: pointer; transition: all .15s ease; font-family: var(--ep-font-body); backdrop-filter: blur(10px);
+}
+.ep-tab:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+.ep-tab.active { background: linear-gradient(135deg, #4fa8e0, #6f8cfb); color: #fff; border-color: transparent; box-shadow: 0 8px 22px rgba(79,168,224,0.35); }
+
+.ep-programs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.ep-program-card {
+  background: var(--ep-card); border: 1px solid var(--ep-border); border-radius: 14px;
+  padding: 36px 30px; text-align: center; backdrop-filter: blur(10px);
+}
+.ep-program-icon {
+  width: 56px; height: 56px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
+}
+.ep-program-icon svg { width: 100%; height: 100%; }
+.ep-program-card h3 { font-size: 1.2rem; margin-bottom: 12px; }
+.ep-program-card p { color: var(--ep-text-soft); font-size: 0.92rem; line-height: 1.65; margin: 0; }
+
+/* ---------- About ---------- */
+.ep-about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.ep-about-grid p { color: var(--ep-text-soft); line-height: 1.75; margin: 0 0 16px; }
+.ep-stat-row { display: flex; gap: 36px; margin-top: 30px; }
+.ep-stat b { display: block; font-family: var(--ep-font-head); font-size: 1.8rem; color: var(--ep-blue-soft); }
+.ep-stat span { font-size: 0.85rem; color: var(--ep-text-soft); }
+.ep-about-card { background: rgba(12, 21, 38, 0.5); border: 1px solid var(--ep-border); border-radius: 16px; padding: 34px; backdrop-filter: blur(10px);}
+.ep-about-card ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 18px; }
+.ep-about-card li { display: flex; gap: 14px; align-items: flex-start; color: var(--ep-text-soft); font-size: 0.94rem; line-height: 1.5; }
+.ep-about-card li svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--ep-blue); margin-top: 2px; }
+.ep-about-card li strong { color: #fff; display: block; margin-bottom: 2px; }
+
+/* ---------- Contact directory ---------- */
+.ep-contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.ep-contact-card { background: var(--ep-card); border: 1.5px solid var(--ep-border); border-radius: 14px; padding: 28px; border-top-width: 2px;backdrop-filter: blur(10px); }
+.ep-contact-head { display: flex; gap: 14px; align-items: center; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--ep-border); }
+.ep-contact-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(255,255,255,0.06); }
+.ep-contact-icon svg { width: 22px; height: 22px; }
+.ep-contact-head h3 { font-size: 1.05rem; }
+.ep-contact-head span { font-size: 0.82rem; color: var(--ep-text-soft); }
+.ep-contact-row { display: flex; gap: 10px; margin-bottom: 14px; font-size: 0.9rem; }
+.ep-contact-row svg { width: 16px; height: 16px; margin-top: 3px; flex-shrink: 0; opacity: 0.8; }
+.ep-contact-row div .k { font-size: 0.76rem; color: var(--ep-text-soft); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 3px; }
+.ep-contact-row div .v { color: #fff; font-weight: 600; }
+.ep-contact-row div .v.link { color: var(--ep-blue-soft); }
+
+.ep-c-cyan { border-top-color: #22d3ee; } .ep-c-cyan .ep-contact-icon { color: #22d3ee; }
+.ep-c-amber { border-top-color: #fbbf24; } .ep-c-amber .ep-contact-icon { color: #fbbf24; }
+.ep-c-green { border-top-color: #34d399; } .ep-c-green .ep-contact-icon { color: #34d399; }
+.ep-c-red { border-top-color: #f87171; } .ep-c-red .ep-contact-icon { color: #f87171; }
+.ep-c-blue { border-top-color: #60a5fa; } .ep-c-blue .ep-contact-icon { color: #60a5fa; }
+.ep-c-white { border-top-color: #e5e7eb; } .ep-c-white .ep-contact-icon { color: #e5e7eb; }
+
+/* ---------- Bottom CTA ---------- */
+.ep-cta { background: var(--ep-card); border: 1px solid var(--ep-border); border-radius: 20px; padding: 48px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; backdrop-filter: blur(10px);}
+.ep-cta h2 { font-size: 1.5rem; }
+.ep-cta p { color: var(--ep-text-soft); margin-top: 8px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .ep-nav-links { display: none; }
+  .ep-hero h1 { font-size: 2.3rem; }
+  .ep-programs { grid-template-columns: 1fr; }
+  .ep-contact-grid { grid-template-columns: 1fr; }
+  .ep-about-grid { grid-template-columns: 1fr; }
+  .ep-section { padding: 64px 0; }
+}
+.ep-bg-fixed {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -1;
+  background: url('https://img.magnific.com/free-vector/geometric-science-education-background-vector-gradient-blue-digital-remix_53876-125993.jpg') center/cover no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

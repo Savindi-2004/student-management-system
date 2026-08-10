@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Timetable — Admin</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<div class="dash">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">A</span> Admin</div>
+    <nav class="side-links sidebar-scroll">
+      <a class="side-link" href="admin-dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a class="side-link" href="manage-students.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Students
+      </a>
+      <a class="side-link" href="teachers.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+        Teachers
+      </a>
+      <a class="side-link" href="attendance.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+        Attendance
+      </a>
+      <a class="side-link" href="courses.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Courses
+      </a>
+      <a class="side-link" href="exams.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Exams
+      </a>
+      <button class="side-link active" data-nav="timetable">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        Timetable
+      </button>
+      <a class="side-link" href="payments.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+        Payments
+      </a>
+    </nav>
+    <div class="side-user">
+      <div class="who">Logged in as<br /><strong id="adminName">—</strong></div>
+      <button class="btn btn-outline btn-sm btn-block" id="logoutBtn">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-head">
+      <div>
+        <h1>Timetable</h1>
+        <p>Create and manage the weekly lecture schedule for each course.</p>
+      </div>
+      <button class="btn btn-primary" id="openAddModal">+ Add Lecture Slot</button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Weekly Schedule</h2>
+        <div class="search-box">
+          <select id="courseFilter" style="min-width:220px;"><option value="">All courses</option></select>
+        </div>
+      </div>
+      <div class="card-body table-wrap">
+        <table>
+          <thead><tr><th>Day</th><th>Time</th><th>Subject</th><th>Course</th><th>Teacher</th><th>Venue</th><th></th></tr></thead>
+          <tbody id="timetableBody"><tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="slotModal">
+  <div class="modal">
+    <div class="modal-head"><h2 id="modalTitle">Add Lecture Slot</h2><button class="modal-close" id="closeModal">&times;</button></div>
+    <div class="modal-body">
+      <div id="modalMsg" class="form-msg"></div>
+      <form id="slotForm">
+        <input type="hidden" id="slotId" />
+        <div class="field-row">
+          <div class="field"><label for="fCourse">Course</label><select id="fCourse" required></select></div>
+          <div class="field"><label for="fSubject">Subject</label><input type="text" id="fSubject" required /></div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="fDay">Day</label>
+            <select id="fDay" required>
+              <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+              <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+            </select>
+          </div>
+          <div class="field"><label for="fTeacher">Teacher (optional)</label><select id="fTeacher"><option value="">—</option></select></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="fStart">Start time</label><input type="time" id="fStart" required /></div>
+          <div class="field"><label for="fEnd">End time</label><input type="time" id="fEnd" required /></div>
+        </div>
+        <div class="field"><label for="fVenue">Venue</label><input type="text" id="fVenue" /></div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="cancelModal">Cancel</button>
+      <button class="btn btn-primary" id="saveSlotBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/admin.js"></script>
+<script>
+  let allSlots = [];
+  const tbody = document.getElementById("timetableBody");
+  const modal = document.getElementById("slotModal");
+  const modalMsg = document.getElementById("modalMsg");
+  const saveBtn = document.getElementById("saveSlotBtn");
+
+  function fmtTime(t) {
+    if (!t) return "—";
+    const [h, m] = t.split(":");
+    const hour = parseInt(h, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const h12 = hour % 12 || 12;
+    return `${h12}:${m} ${ampm}`;
+  }
+
+  function renderTable(list) {
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No lectures scheduled</h3><p>Add a lecture slot to build the timetable.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map((s) => `
+      <tr>
+        <td>${s.day_of_week}</td>
+        <td>${fmtTime(s.start_time)} – ${fmtTime(s.end_time)}</td>
+        <td>${s.subject_name}</td>
+        <td>${s.course_name}</td>
+        <td>${s.teacher_name || "—"}</td>
+        <td>${s.venue || "—"}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openEditModal(${s.id})">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="handleDelete(${s.id}, '${s.subject_name.replace(/'/g, "")}')">Delete</button>
+          </div>
+        </td>
+      </tr>`).join("");
+  }
+
+  async function loadCourses() {
+    const res = await fetch(`${API_BASE}/courses`, { credentials: "include" });
+    const data = await res.json();
+    const opts = (data.courses || []).map((c) => `<option value="${c.id}">${c.course_name}</option>`).join("");
+    document.getElementById("fCourse").innerHTML = opts;
+    document.getElementById("courseFilter").innerHTML = `<option value="">All courses</option>` + opts;
+  }
+
+  async function loadTeachers() {
+    const res = await fetch(`${API_BASE}/teachers`, { credentials: "include" });
+    const data = await res.json();
+    document.getElementById("fTeacher").innerHTML = `<option value="">—</option>` +
+      (data.teachers || []).map((t) => `<option value="${t.id}">${t.name}</option>`).join("");
+  }
+
+  async function loadTimetable() {
+    const res = await fetch(`${API_BASE}/timetable`, { credentials: "include" });
+    const data = await res.json();
+    allSlots = data.timetable || [];
+    applyFilter();
+  }
+
+  function applyFilter() {
+    const courseId = document.getElementById("courseFilter").value;
+    const filtered = courseId ? allSlots.filter((s) => String(s.course_id) === courseId) : allSlots;
+    renderTable(filtered);
+  }
+  document.getElementById("courseFilter").addEventListener("change", applyFilter);
+
+  function resetForm() {
+    document.getElementById("slotForm").reset();
+    document.getElementById("slotId").value = "";
+    modalMsg.className = "form-msg";
+  }
+
+  document.getElementById("openAddModal").addEventListener("click", () => {
+    resetForm();
+    document.getElementById("modalTitle").textContent = "Add Lecture Slot";
+    modal.classList.add("open");
+  });
+
+  window.openEditModal = function (id) {
+    resetForm();
+    const s = allSlots.find((x) => x.id === id);
+    if (!s) return;
+    document.getElementById("modalTitle").textContent = "Edit Lecture Slot";
+    document.getElementById("slotId").value = s.id;
+    document.getElementById("fCourse").value = s.course_id;
+    document.getElementById("fSubject").value = s.subject_name;
+    document.getElementById("fDay").value = s.day_of_week;
+    document.getElementById("fTeacher").value = s.teacher_id || "";
+    document.getElementById("fStart").value = s.start_time ? s.start_time.slice(0, 5) : "";
+    document.getElementById("fEnd").value = s.end_time ? s.end_time.slice(0, 5) : "";
+    document.getElementById("fVenue").value = s.venue || "";
+    modal.classList.add("open");
+  };
+
+  window.handleDelete = async function (id, name) {
+    if (!confirm(`Remove "${name}" from the timetable?`)) return;
+    const res = await fetch(`${API_BASE}/timetable/${id}`, { method: "DELETE", credentials: "include" });
+    const data = await res.json();
+    if (!res.ok) return alert(data.message);
+    await loadTimetable();
+  };
+
+  function closeModal() { modal.classList.remove("open"); }
+  document.getElementById("closeModal").addEventListener("click", closeModal);
+  document.getElementById("cancelModal").addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+  saveBtn.addEventListener("click", async () => {
+    const id = document.getElementById("slotId").value;
+    const form = document.getElementById("slotForm");
+    if (!form.reportValidity()) return;
+
+    const payload = {
+      courseId: document.getElementById("fCourse").value,
+      subjectName: document.getElementById("fSubject").value.trim(),
+      dayOfWeek: document.getElementById("fDay").value,
+      teacherId: document.getElementById("fTeacher").value || null,
+      startTime: document.getElementById("fStart").value,
+      endTime: document.getElementById("fEnd").value,
+      venue: document.getElementById("fVenue").value.trim(),
+    };
+
+    saveBtn.disabled = true; saveBtn.textContent = "Saving...";
+    try {
+      const url = id ? `${API_BASE}/timetable/${id}` : `${API_BASE}/timetable`;
+      const method = id ? "PUT" : "POST";
+      const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      closeModal();
+      await loadTimetable();
+    } catch (err) {
+      modalMsg.textContent = err.message;
+      modalMsg.className = "form-msg error";
+    } finally {
+      saveBtn.disabled = false; saveBtn.textContent = "Save";
+    }
+  });
+
+  (async function init() {
+    await requireAdminSession();
+    await loadCourses();
+    await loadTeachers();
+    await loadTimetable();
+  })();
+</script>
+</body>
+</html>

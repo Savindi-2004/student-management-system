@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard — Admin</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<div class="dash">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">A</span> Admin</div>
+    <nav class="side-links sidebar-scroll">
+      <button class="side-link active" data-nav="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <a class="side-link" href="manage-students.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Students
+      </a>
+      <a class="side-link" href="teachers.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+        Teachers
+      </a>
+      <a class="side-link" href="attendance.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+        Attendance
+      </a>
+      <a class="side-link" href="courses.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Courses
+      </a>
+      <a class="side-link" href="exams.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Exams
+      </a>
+      <a class="side-link" href="timetable.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        Timetable
+      </a>
+
+      <a class="side-link" href="payments.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+        Payments
+      </a>
+    </nav>
+    <div class="side-user">
+      <div class="who">Logged in as<br /><strong id="adminName">—</strong></div>
+      <button class="btn btn-outline btn-sm btn-block" id="logoutBtn">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-head">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Here's a live snapshot of the whole system.</p>
+      </div>
+    </div>
+
+    <div class="stat-grid-4">
+      <div class="stat-card stat-card-tinted stat-tint-blue">
+        <div class="stat-card-row">
+          <div><div class="label">Students</div><div class="value" id="statStudents">—</div></div>
+          <div class="stat-icon stat-icon-cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-tinted stat-tint-amber">
+        <div class="stat-card-row">
+          <div><div class="label">Teachers</div><div class="value" id="statTeachers">—</div></div>
+          <div class="stat-icon stat-icon-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/></svg></div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-tinted stat-tint-green">
+        <div class="stat-card-row">
+          <div><div class="label">Active Courses</div><div class="value" id="statCourses">—</div></div>
+          <div class="stat-icon stat-icon-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-tinted stat-tint-red">
+        <div class="stat-card-row">
+          <div><div class="label">Earnings</div><div class="value" id="statEarnings" style="font-size:1.6rem;">—</div></div>
+          <div class="stat-icon stat-icon-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 22px;">
+      <div class="card">
+        <div class="card-head"><h2>Recently Added Students</h2><a href="manage-students.html" class="btn btn-ghost btn-sm">View all</a></div>
+        <div class="card-body table-wrap">
+          <table>
+            <thead><tr><th>Reg. No.</th><th>Name</th><th>Email</th><th>Course</th></tr></thead>
+            <tbody id="recentTableBody">
+              <tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Upcoming Exams</h2><a href="exams.html" class="btn btn-ghost btn-sm">View all</a></div>
+        <div class="card-body" id="upcomingExamsBody">
+          <div class="panel-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Loading...
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../js/admin.js"></script>
+<script>
+  async function loadDashboardStats() {
+    try {
+      const [students, courseStats, paymentStats] = await Promise.all([
+        fetchStudents(),
+        fetch(`${API_BASE}/courses/stats`, { credentials: "include" }).then((r) => r.json()),
+        fetch(`${API_BASE}/payments/stats`, { credentials: "include" }).then((r) => r.json()),
+      ]);
+
+      let teacherCount = "—";
+      try {
+        const tRes = await fetch(`${API_BASE}/teachers`, { credentials: "include" });
+        const tData = await tRes.json();
+        teacherCount = tData.teachers ? tData.teachers.length : 0;
+      } catch (e) { teacherCount = 0; }
+
+      document.getElementById("statStudents").textContent = students.length;
+      document.getElementById("statTeachers").textContent = teacherCount;
+      document.getElementById("statCourses").textContent = courseStats.totalCourses ?? 0;
+      const earnings = Number(paymentStats.totalEarnings || 0);
+      document.getElementById("statEarnings").textContent = "Rs. " + earnings.toLocaleString();
+
+      const tbody = document.getElementById("recentTableBody");
+      const recent = students.slice(0, 5);
+      tbody.innerHTML = recent.length
+        ? recent.map((s) => `
+          <tr>
+            <td><span class="reg-no">${s.student_reg_no}</span></td>
+            <td>${s.name}</td>
+            <td>${s.email}</td>
+            <td>${s.course || "—"}</td>
+          </tr>`).join("")
+        : `<tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">No students yet.</td></tr>`;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function loadUpcomingExams() {
+    const box = document.getElementById("upcomingExamsBody");
+    try {
+      const res = await fetch(`${API_BASE}/exams`, { credentials: "include" });
+      const data = await res.json();
+      const today = new Date().toISOString().split("T")[0];
+      const upcoming = (data.exams || []).filter((e) => e.exam_date && e.exam_date.split("T")[0] >= today).slice(0, 4);
+
+      if (upcoming.length === 0) {
+        box.innerHTML = `<div class="panel-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>No upcoming exams scheduled.</div>`;
+        return;
+      }
+      box.innerHTML = upcoming.map((e) => `
+        <div style="padding:12px 0; border-bottom:1px solid var(--border);">
+          <div style="font-weight:600; color:var(--navy-900); font-size:0.92rem;">${e.exam_name}</div>
+          <div style="font-size:0.82rem; color:var(--ink-soft); margin-top:3px;">${e.course_name} · ${e.exam_date ? new Date(e.exam_date).toLocaleDateString() : "TBD"}</div>
+        </div>`).join("");
+    } catch (err) {
+      box.innerHTML = `<div class="panel-empty">Could not load exams.</div>`;
+    }
+  }
+
+  (async function initOverview() {
+    await requireAdminSession();
+    await loadDashboardStats();
+    await loadUpcomingExams();
+  })();
+</script>
+</body>
+</html>

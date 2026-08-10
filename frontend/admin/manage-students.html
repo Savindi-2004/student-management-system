@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Students — Admin</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<div class="dash">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">A</span> Admin</div>
+    <nav class="side-links sidebar-scroll">
+      <a class="side-link" href="admin-dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <button class="side-link active" data-nav="manage">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Students
+      </button>
+      <a class="side-link" href="teachers.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+        Teachers
+      </a>
+      <a class="side-link" href="attendance.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+        Attendance
+      </a>
+      <a class="side-link" href="courses.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Courses
+      </a>
+      <a class="side-link" href="exams.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Exams
+      </a>
+      <a class="side-link" href="timetable.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        Timetable
+      </a>
+
+      <a class="side-link" href="payments.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+        Payments
+      </a>
+    </nav>
+    <div class="side-user">
+      <div class="who">Logged in as<br /><strong id="adminName">—</strong></div>
+      <button class="btn btn-outline btn-sm btn-block" id="logoutBtn">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-head">
+      <div>
+        <h1>Manage Students</h1>
+        <p>Create, view, update, and delete student records.</p>
+      </div>
+      <button class="btn btn-primary" id="openAddModal">+ Add Student</button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>All Students</h2>
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search by ID, name, or course" />
+        </div>
+      </div>
+      <div class="card-body table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Reg. No.</th><th>Name</th><th>Email</th><th>Course</th><th>Contact</th><th>Enrolled</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody">
+            <tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add / Edit Student Modal -->
+<div class="modal-overlay" id="studentModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">Add Student</h2>
+      <button class="modal-close" id="closeModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="modalMsg" class="form-msg"></div>
+      <form id="studentForm">
+        <input type="hidden" id="studentId" />
+
+        <div class="field-row">
+          <div class="field">
+            <label for="sName">Full name</label>
+            <input type="text" id="sName" required />
+          </div>
+          <div class="field">
+            <label for="sRegNo">Registration No.</label>
+            <input type="text" id="sRegNo" required />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="sEmail">Email</label>
+            <input type="email" id="sEmail" required />
+          </div>
+          <div class="field" id="passwordField">
+            <label for="sPassword">Password</label>
+            <input type="password" id="sPassword" placeholder="At least 6 characters" minlength="6" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="sDob">Date of birth</label>
+            <input type="date" id="sDob" />
+          </div>
+          <div class="field">
+            <label for="sContact">Contact number</label>
+            <input type="text" id="sContact" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="sCourse">Course</label>
+            <select id="sCourse" required><option value="">Loading courses...</option></select>
+          </div>
+          <div class="field">
+            <label for="sAddress">Address</label>
+            <input type="text" id="sAddress" />
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="cancelModal">Cancel</button>
+      <button class="btn btn-primary" id="saveStudentBtn">Save Student</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/admin.js"></script>
+<script>
+  let allStudents = [];
+  const tbody = document.getElementById("studentsTableBody");
+  const modal = document.getElementById("studentModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalMsg = document.getElementById("modalMsg");
+  const passwordField = document.getElementById("passwordField");
+  const saveBtn = document.getElementById("saveStudentBtn");
+
+  function renderTable(students) {
+    if (students.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No students found</h3><p>Try a different search, or add a new student.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = students
+      .map(
+        (s) => `
+      <tr>
+        <td><span class="reg-no">${s.student_reg_no}</span></td>
+        <td>${s.name}</td>
+        <td>${s.email}</td>
+        <td>${s.course || "—"}</td>
+        <td>${s.contact_no || "—"}</td>
+        <td>${s.enrollment_date ? new Date(s.enrollment_date).toLocaleDateString() : "—"}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openEditModal(${s.id})">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="handleDelete(${s.id}, '${s.name.replace(/'/g, "")}')">Delete</button>
+          </div>
+        </td>
+      </tr>`
+      )
+      .join("");
+  }
+
+  async function loadCourseOptions() {
+    const res = await fetch(`${API_BASE}/courses`, { credentials: "include" });
+    const data = await res.json();
+    const courses = data.courses || [];
+    document.getElementById("sCourse").innerHTML = courses.length
+      ? `<option value="">Select a course...</option>` + courses.map((c) => `<option value="${c.course_name}">${c.course_name}</option>`).join("")
+      : `<option value="">No courses yet — add one in Courses tab</option>`;
+  }
+
+  async function loadStudents() {
+    try {
+      allStudents = await fetchStudents();
+      renderTable(allStudents);
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--danger);">${err.message}</td></tr>`;
+    }
+  }
+
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    const filtered = allStudents.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.email.toLowerCase().includes(q) ||
+        s.student_reg_no.toLowerCase().includes(q) ||
+        String(s.id).includes(q) ||
+        (s.course || "").toLowerCase().includes(q)
+    );
+    renderTable(filtered);
+  });
+
+  function resetForm() {
+    document.getElementById("studentForm").reset();
+    document.getElementById("studentId").value = "";
+    modalMsg.className = "form-msg";
+  }
+
+  function openAddModal() {
+    resetForm();
+    modalTitle.textContent = "Add Student";
+    passwordField.style.display = "block";
+    document.getElementById("sPassword").required = true;
+    modal.classList.add("open");
+  }
+
+  window.openEditModal = function (id) {
+    resetForm();
+    const s = allStudents.find((x) => x.id === id);
+    if (!s) return;
+    modalTitle.textContent = "Edit Student";
+    passwordField.style.display = "none";
+    document.getElementById("sPassword").required = false;
+
+    document.getElementById("studentId").value = s.id;
+    document.getElementById("sName").value = s.name;
+    document.getElementById("sRegNo").value = s.student_reg_no;
+    document.getElementById("sRegNo").disabled = true;
+    document.getElementById("sEmail").value = s.email;
+    document.getElementById("sDob").value = s.dob ? s.dob.split("T")[0] : "";
+    document.getElementById("sContact").value = s.contact_no || "";
+    document.getElementById("sCourse").value = s.course || "";
+    document.getElementById("sAddress").value = s.address || "";
+
+    modal.classList.add("open");
+  };
+
+  window.handleDelete = async function (id, name) {
+    if (!confirm(`Delete ${name}'s record? This cannot be undone.`)) return;
+    try {
+      await deleteStudentRequest(id);
+      await loadStudents();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  function closeModal() {
+    modal.classList.remove("open");
+    document.getElementById("sRegNo").disabled = false;
+  }
+
+  document.getElementById("openAddModal").addEventListener("click", openAddModal);
+  document.getElementById("closeModal").addEventListener("click", closeModal);
+  document.getElementById("cancelModal").addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  saveBtn.addEventListener("click", async () => {
+    const id = document.getElementById("studentId").value;
+    const form = document.getElementById("studentForm");
+    if (!form.reportValidity()) return;
+
+    const payload = {
+      name: document.getElementById("sName").value.trim(),
+      studentRegNo: document.getElementById("sRegNo").value.trim(),
+      email: document.getElementById("sEmail").value.trim(),
+      dob: document.getElementById("sDob").value || null,
+      contactNo: document.getElementById("sContact").value.trim(),
+      course: document.getElementById("sCourse").value.trim(),
+      address: document.getElementById("sAddress").value.trim(),
+    };
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+
+    try {
+      if (id) {
+        await updateStudentRequest(id, payload);
+      } else {
+        payload.password = document.getElementById("sPassword").value;
+        await createStudentRequest(payload);
+      }
+      closeModal();
+      await loadStudents();
+    } catch (err) {
+      modalMsg.textContent = err.message;
+      modalMsg.className = "form-msg error";
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save Student";
+    }
+  });
+
+  (async function init() {
+    await requireAdminSession();
+    await loadCourseOptions();
+    await loadStudents();
+  })();
+</script>
+</body>
+</html>

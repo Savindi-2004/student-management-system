@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Payments — Admin</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<div class="dash">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">A</span> Admin</div>
+    <nav class="side-links sidebar-scroll">
+      <a class="side-link" href="admin-dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a class="side-link" href="manage-students.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Students
+      </a>
+      <a class="side-link" href="teachers.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+        Teachers
+      </a>
+      <a class="side-link" href="attendance.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+        Attendance
+      </a>
+      <a class="side-link" href="courses.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Courses
+      </a>
+      <a class="side-link" href="exams.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Exams
+      </a>
+      <a class="side-link" href="timetable.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        Timetable
+      </a>
+
+      <button class="side-link active" data-nav="payments">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+        Payments
+      </button>
+    </nav>
+    <div class="side-user">
+      <div class="who">Logged in as<br /><strong id="adminName">—</strong></div>
+      <button class="btn btn-outline btn-sm btn-block" id="logoutBtn">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-head">
+      <div>
+        <h1>Payments</h1>
+        <p>Record fee payments and track who still owes.</p>
+      </div>
+      <button class="btn btn-primary" id="openAddModal">+ Record Payment</button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Payment Records</h2>
+        <div class="search-box">
+          <select id="statusFilter">
+            <option value="">All statuses</option>
+            <option value="Paid">Paid</option>
+            <option value="Partial">Partial</option>
+            <option value="Overdue">Overdue</option>
+          </select>
+          <input type="text" id="searchInput" placeholder="Search by student or reg. no." />
+        </div>
+      </div>
+      <div class="card-body table-wrap">
+        <table>
+          <thead><tr><th>Reg. No.</th><th>Student</th><th>Course</th><th>Amount</th><th>Date</th><th>Status</th><th></th></tr></thead>
+          <tbody id="paymentsTableBody"><tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Payment Entry Modal -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal">
+    <div class="modal-head"><h2 id="modalTitle">Record Payment</h2><button class="modal-close" id="closeModal">&times;</button></div>
+    <div class="modal-body">
+      <div id="modalMsg" class="form-msg"></div>
+      <form id="paymentForm">
+        <input type="hidden" id="paymentId" />
+        <div class="field">
+          <label for="pStudent">Student</label>
+          <select id="pStudent" required><option value="">Select a student...</option></select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="pFeeType">Fee Type</label>
+            <select id="pFeeType" required>
+              <option value="Course Fee">Course Fee</option>
+              <option value="Registration Fee">Registration Fee</option>
+              <option value="Exam Fee">Exam Fee</option>
+              <option value="Monthly Installment">Monthly Installment</option>
+            </select>
+          </div>
+          <div class="field"><label for="pAmount">Amount Paid</label><input type="number" id="pAmount" min="0" step="0.01" required /></div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="pMethod">Payment Method</label>
+            <select id="pMethod" required>
+              <option value="Cash">Cash</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Card Payment">Card Payment</option>
+              <option value="Online Gateway">Online Gateway</option>
+            </select>
+          </div>
+          <div class="field"><label for="pRef">Transaction ID / Reference No.</label><input type="text" id="pRef" /></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="pDate">Payment Date</label><input type="date" id="pDate" required /></div>
+          <div class="field">
+            <label for="pStatus">Status</label>
+            <select id="pStatus" required>
+              <option value="Paid">Paid</option>
+              <option value="Partial">Partial</option>
+              <option value="Overdue">Overdue</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="cancelModal">Cancel</button>
+      <button class="btn btn-primary" id="savePaymentBtn">Save Payment</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/admin.js"></script>
+<script>
+  let allPayments = [];
+  let allStudents = [];
+  const tbody = document.getElementById("paymentsTableBody");
+  const modal = document.getElementById("paymentModal");
+  const modalMsg = document.getElementById("modalMsg");
+  const saveBtn = document.getElementById("savePaymentBtn");
+
+  function statusBadge(status) {
+    const cls = status === "Paid" ? "badge-paid" : status === "Partial" ? "badge-partial" : "badge-overdue";
+    return `<span class="badge ${cls}">${status === "Overdue" ? "Overdue / Pending" : status}</span>`;
+  }
+
+  function renderTable(list) {
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No payment records</h3><p>Record a payment to get started.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map((p) => `
+      <tr>
+        <td><span class="reg-no">${p.student_reg_no}</span></td>
+        <td>${p.student_name}</td>
+        <td>${p.course_name || "—"}</td>
+        <td>Rs. ${Number(p.amount).toLocaleString()}</td>
+        <td>${new Date(p.payment_date).toLocaleDateString()}</td>
+        <td>${statusBadge(p.status)}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openEditModal(${p.id})">Edit</button>
+            <button class="btn btn-ghost btn-sm" onclick="printReceipt(${p.id})">Receipt</button>
+            ${p.status !== "Paid" ? `<button class="btn btn-ghost btn-sm" onclick="remind(${p.id})">Remind</button>` : ""}
+            <button class="btn btn-danger btn-sm" onclick="handleDelete(${p.id}, '${p.student_name.replace(/'/g, "")}')">Delete</button>
+          </div>
+        </td>
+      </tr>`).join("");
+  }
+
+  async function loadStudentsForForm() {
+    allStudents = await fetchStudents();
+    document.getElementById("pStudent").innerHTML =
+      `<option value="">Select a student...</option>` +
+      allStudents.map((s) => `<option value="${s.id}">${s.student_reg_no} — ${s.name}</option>`).join("");
+  }
+
+  async function loadPayments() {
+    const status = document.getElementById("statusFilter").value;
+    const search = document.getElementById("searchInput").value.trim();
+    const params = new URLSearchParams();
+    if (status) params.set("status", status);
+    if (search) params.set("search", search);
+    const res = await fetch(`${API_BASE}/payments?${params.toString()}`, { credentials: "include" });
+    const data = await res.json();
+    allPayments = data.payments || [];
+    renderTable(allPayments);
+  }
+
+  document.getElementById("statusFilter").addEventListener("change", loadPayments);
+  let searchTimer;
+  document.getElementById("searchInput").addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(loadPayments, 300);
+  });
+
+  function resetForm() {
+    document.getElementById("paymentForm").reset();
+    document.getElementById("paymentId").value = "";
+    modalMsg.className = "form-msg";
+  }
+
+  document.getElementById("openAddModal").addEventListener("click", () => {
+    resetForm();
+    document.getElementById("modalTitle").textContent = "Record Payment";
+    document.getElementById("pStudent").disabled = false;
+    document.getElementById("pDate").value = new Date().toISOString().split("T")[0];
+    modal.classList.add("open");
+  });
+   window.openEditModal = function (id) {
+    resetForm();
+    const p = allPayments.find((x) => x.id === id);
+    if (!p) return;
+    document.getElementById("modalTitle").textContent = "Edit Payment";
+    document.getElementById("paymentId").value = p.id;
+    document.getElementById("pStudent").value = p.student_id;
+    document.getElementById("pStudent").disabled = true;
+    document.getElementById("pFeeType").value = p.fee_type;
+    document.getElementById("pAmount").value = p.amount;
+    document.getElementById("pMethod").value = p.payment_method;
+    document.getElementById("pRef").value = p.transaction_ref || "";
+    document.getElementById("pDate").value = p.payment_date.split("T")[0];
+    document.getElementById("pStatus").value = p.status;
+    modal.classList.add("open");
+  };
+
+  function closeModal() { modal.classList.remove("open"); }
+  document.getElementById("closeModal").addEventListener("click", closeModal);
+  document.getElementById("cancelModal").addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+  saveBtn.addEventListener("click", async () => {
+    const paymentId = document.getElementById("paymentId").value;
+    const studentId = document.getElementById("pStudent").value;
+    if (!studentId) {
+      modalMsg.textContent = "Please select a valid student from the list.";
+      modalMsg.className = "form-msg error";
+      return;
+    }
+    const form = document.getElementById("paymentForm");
+    if (!form.reportValidity()) return;
+
+    const payload = {
+      studentId,
+      feeType: document.getElementById("pFeeType").value,
+      amount: document.getElementById("pAmount").value,
+      paymentMethod: document.getElementById("pMethod").value,
+      transactionRef: document.getElementById("pRef").value.trim(),
+      paymentDate: document.getElementById("pDate").value,
+      status: document.getElementById("pStatus").value,
+    };
+
+    saveBtn.disabled = true; saveBtn.textContent = "Saving...";
+    try {
+      const url = paymentId ? `${API_BASE}/payments/${paymentId}` : `${API_BASE}/payments`;
+      const method = paymentId ? "PUT" : "POST";
+      const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      closeModal();
+      await loadPayments();
+    } catch (err) {
+      modalMsg.textContent = err.message;
+      modalMsg.className = "form-msg error";
+    } finally {
+      saveBtn.disabled = false; saveBtn.textContent = "Save Payment";
+    }
+  });
+
+  window.handleDelete = async function (id, name) {
+    if (!confirm(`Delete this payment record for ${name}?`)) return;
+    const res = await fetch(`${API_BASE}/payments/${id}`, { method: "DELETE", credentials: "include" });
+    const data = await res.json();
+    if (!res.ok) return alert(data.message);
+    await loadPayments();
+  };
+
+  // Reminder massage
+  window.remind = async function (id) {
+    const res = await fetch(`${API_BASE}/payments/${id}/remind`, { method: "POST", credentials: "include" });
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.message || "Could not send reminder.");
+      return;
+    }
+    alert("Reminder sent to the student.");
+    await loadPayments();
+  };
+
+  // Simple printable receipt (use the browser's "Save as PDF" print option).
+  window.printReceipt = function (id) {
+    const p = allPayments.find((x) => x.id === id);
+    if (!p) return;
+    const win = window.open("", "_blank");
+    win.document.write(`
+      <html><head><title>Receipt - ${p.student_name}</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 40px; color: #16213a; }
+        h1 { font-size: 20px; margin-bottom: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+        td { padding: 10px 0; border-bottom: 1px solid #e3ded1; }
+        td:first-child { color: #5b6178; width: 200px; }
+        .total { font-size: 1.3rem; font-weight: bold; margin-top: 20px; }
+      </style></head><body>
+      <h1>Payment Receipt</h1>
+      <p style="color:#5b6178;">Student Management System</p>
+      <table>
+        <tr><td>Student</td><td>${p.student_name} (${p.student_reg_no})</td></tr>
+        <tr><td>Course</td><td>${p.course_name || "—"}</td></tr>
+        <tr><td>Fee Type</td><td>${p.fee_type}</td></tr>
+        <tr><td>Payment Method</td><td>${p.payment_method}</td></tr>
+        <tr><td>Transaction Ref.</td><td>${p.transaction_ref || "—"}</td></tr>
+        <tr><td>Payment Date</td><td>${new Date(p.payment_date).toLocaleDateString()}</td></tr>
+        <tr><td>Status</td><td>${p.status}</td></tr>
+      </table>
+      <div class="total">Amount Paid: Rs. ${Number(p.amount).toLocaleString()}</div>
+      <script>window.print();<\/script>
+      </body></html>
+    `);
+    win.document.close();
+  };
+
+  (async function init() {
+    await requireAdminSession();
+    await loadStudentsForForm();
+    await loadPayments();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EduPortal — Student Management System</title>
+<link rel="stylesheet" href="css/home.css" />
+</head>
+<body class="ep">
+  <body class="ep">
+<div class="ep-bg-fixed"></div>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="ep-navbar">
+  <div class="ep-container">
+    <div class="ep-brand">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="#55c1f0"/>
+        <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#8fd6f7"/>
+      </svg>
+      EduPortal
+    </div>
+    <div class="ep-nav-links">
+      <a href="#home">Home</a>
+      <a href="#courses">Courses
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </a>
+      <a href="#about">About Us</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="ep-nav-actions">
+      <a href="login.html" class="ep-btn ep-btn-outline">Sign In</a>
+      <a href="register.html" class="ep-btn ep-btn-solid">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HOME / HERO ================= -->
+<header class="ep-hero" id="home">
+  <div class="ep-hero-bg"></div>
+  <div class="ep-container">
+    <span class="ep-pill">Modern Education Management</span>
+    <h1>Welcome to the ABC<br />University EduPortal</h1>
+    <p class="ep-lead">Manage academic records, track course progress, and connect seamless learning environments in one integrated portal.</p>
+    <div class="ep-hero-actions">
+      <a href="register.html" class="ep-btn ep-btn-gradient">Get Started Now</a>
+      <a href="#courses" class="ep-btn ep-btn-line">Explore Courses</a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= COURSES ================= -->
+<section class="ep-section" id="courses">
+  <div class="ep-container">
+    <div class="ep-section-head">
+      <h2>Academic Faculties &amp; Programs</h2>
+      <p>Explore world-class undergraduate degree programs across our faculties</p>
+    </div>
+
+    <div class="ep-tabs" id="facultyTabs">
+      <button class="ep-tab active" data-faculty="computing">Computing</button>
+      <button class="ep-tab" data-faculty="engineering">Engineering</button>
+      <button class="ep-tab" data-faculty="business">Business</button>
+      <button class="ep-tab" data-faculty="arts">Arts</button>
+      <button class="ep-tab" data-faculty="science">Science</button>
+    </div>
+
+    <div class="ep-programs" id="programsGrid"></div>
+  </div>
+</section>
+
+<!-- ================= ABOUT US ================= -->
+<section class="ep-section" id="about" >
+  <div class="ep-container">
+    <div class="ep-about-grid">
+      <div>
+        <span class="ep-pill">About Us</span>
+        <h2 style="font-size:2.1rem; margin-top:18px;">Built for a modern, connected campus</h2>
+        <p style="margin-top:20px;">ABC University EduPortal brings together every academic office — admissions, faculties, and student records — into one place, so administrators spend less time on paperwork and students always know where they stand.</p>
+        <p>From enrolment on day one to graduation, every record stays accurate, accessible, and secure.</p>
+        <div class="ep-stat-row">
+          <div class="ep-stat"><b>5</b><span>Faculties</span></div>
+          <div class="ep-stat"><b>15+</b><span>Degree Programs</span></div>
+          <div class="ep-stat"><b>24/7</b><span>Portal Access</span></div>
+        </div>
+      </div>
+      <div class="ep-about-card">
+        <ul>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <div><strong>Accurate records</strong>Every student profile is kept up to date and easy to verify.</div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <div><strong>Secure by design</strong>Role-based access means students only ever see their own data.</div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+            <div><strong>Built for everyone</strong>A simple dashboard for admins, and a clean profile view for students.</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="ep-section" id="contact">
+  <div class="ep-container">
+    <div class="ep-section-head">
+      <h2>Faculty Contact Directory</h2>
+      <p>Direct contact information for all academic faculties and deans' offices</p>
+    </div>
+
+    <div class="ep-contact-grid">
+
+      <div class="ep-contact-card ep-c-cyan">
+        <div class="ep-contact-head">
+          <div class="ep-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <div><h3>Faculty of Computing</h3><span>Computing &amp; IT Studies</span></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <div><div class="k">Dean / Head</div><div class="v">Prof. K. L. Perera</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg>
+          <div><div class="k">Contact Number</div><div class="v">+94 11 234 5671</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+          <div><div class="k">Email Address</div><div class="v link">computing@eduportal.lk</div></div>
+        </div>
+      </div>
+
+      <div class="ep-contact-card ep-c-amber">
+        <div class="ep-contact-head">
+          <div class="ep-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+          <div><h3>Faculty of Engineering</h3><span>Engineering &amp; Tech</span></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <div><div class="k">Dean / Head</div><div class="v">Dr. Nihal Jayasinghe</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg>
+          <div><div class="k">Contact Number</div><div class="v">+94 11 234 5672</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+          <div><div class="k">Email Address</div><div class="v link">engineering@eduportal.lk</div></div>
+        </div>
+      </div>
+
+      <div class="ep-contact-card ep-c-green">
+        <div class="ep-contact-head">
+          <div class="ep-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 5-6"/></svg></div>
+          <div><h3>Faculty of Business</h3><span>Business &amp; Finance</span></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <div><div class="k">Dean / Head</div><div class="v">Dr. Anoma Silva</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg>
+          <div><div class="k">Contact Number</div><div class="v">+94 11 234 5673</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+          <div><div class="k">Email Address</div><div class="v link">business@eduportal.lk</div></div>
+        </div>
+      </div>
+
+      <div class="ep-contact-card ep-c-red">
+        <div class="ep-contact-head">
+          <div class="ep-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2a10 10 0 000 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4a4 4 0 004-4c0-5-4.5-9.4-10-9.4z"/></svg></div>
+          <div><h3>Faculty of Arts</h3><span>Humanities &amp; Social Sciences</span></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <div><div class="k">Dean / Head</div><div class="v">Prof. Sunethra Gunawardena</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg>
+          <div><div class="k">Contact Number</div><div class="v">+94 11 234 5674</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+          <div><div class="k">Email Address</div><div class="v link">arts@eduportal.lk</div></div>
+        </div>
+      </div>
+
+      <div class="ep-contact-card ep-c-blue">
+        <div class="ep-contact-head">
+          <div class="ep-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6M10 3v5.5L5.5 17a2 2 0 001.7 3h9.6a2 2 0 001.7-3L14 8.5V3"/></svg></div>
+          <div><h3>Faculty of Science</h3><span>Applied Sciences &amp; Research</span></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <div><div class="k">Dean / Head</div><div class="v">Dr. Rohan Fernando</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg>
+          <div><div class="k">Contact Number</div><div class="v">+94 11 234 5675</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+          <div><div class="k">Email Address</div><div class="v link">science@eduportal.lk</div></div>
+        </div>
+      </div>
+
+      <div class="ep-contact-card ep-c-white">
+        <div class="ep-contact-head">
+          <div class="ep-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M4 21V9l8-6 8 6v12M9 21v-6h6v6"/></svg></div>
+          <div><h3>General Administration</h3><span>Main Campus &amp; Admissions</span></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div><div class="k">Address</div><div class="v">EduPortal Campus, Colombo 03</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg>
+          <div><div class="k">Hotline</div><div class="v">+94 11 200 0000</div></div>
+        </div>
+        <div class="ep-contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+          <div><div class="k">General Email</div><div class="v link">info@eduportal.lk</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ep-cta" style="margin-top:56px;">
+      <div>
+        <h2>Already have an account?</h2>
+      </div>
+      <a href="login.html" class="ep-btn ep-btn-gradient">Go to Login</a>
+    </div>
+  </div>
+</section>
+
+
+<script src="js/home.js"></script>
+</body>
+</html>

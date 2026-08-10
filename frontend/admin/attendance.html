@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Attendance — Admin</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<div class="dash">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">A</span> Admin</div>
+    <nav class="side-links sidebar-scroll">
+      <a class="side-link" href="admin-dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a class="side-link" href="manage-students.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Students
+      </a>
+      <a class="side-link" href="teachers.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+        Teachers
+      </a>
+      <button class="side-link active" data-nav="attendance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+        Attendance
+      </button>
+      <a class="side-link" href="courses.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Courses
+      </a>
+      <a class="side-link" href="exams.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Exams
+      </a>
+      <a class="side-link" href="timetable.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        Timetable
+      </a>
+      <a class="side-link" href="payments.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+        Payments
+      </a>
+    </nav>
+    <div class="side-user">
+      <div class="who">Logged in as<br /><strong id="adminName">—</strong></div>
+      <button class="btn btn-outline btn-sm btn-block" id="logoutBtn">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-head">
+      <div>
+        <h1>Attendance</h1>
+        <p>Mark attendance and review course/subject-wise history.</p>
+      </div>
+      <div class="search-box">
+        <select id="courseFilter" style="min-width:220px;"><option value="">All courses</option></select>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="label">Overall Attendance</div><div class="value" id="statOverall">—</div></div>
+      <div class="stat-card"><div class="label">Present</div><div class="value" id="statPresent" style="color:var(--success);">—</div></div>
+      <div class="stat-card"><div class="label">Absent</div><div class="value" id="statAbsent" style="color:var(--danger);">—</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:22px;">
+      <div class="card-head"><h2>Subject-wise Attendance %</h2></div>
+      <div class="card-body table-wrap">
+        <table>
+          <thead><tr><th>Subject</th><th>Records</th><th>Attendance %</th></tr></thead>
+          <tbody id="subjectWiseBody"><tr><td colspan="3" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-head"><h2>Mark Student Attendance</h2></div>
+      <div class="card-body">
+        <div id="sMarkMsg" class="form-msg"></div>
+        <form id="markStudentForm" class="field-row" style="align-items:end; flex-wrap:wrap;">
+          <div class="field">
+            <label for="sSelect">Student</label>
+            <select id="sSelect" required></select>
+          </div>
+          <div class="field">
+            <label for="mCourse">Course</label>
+            <select id="mCourse" required></select>
+          </div>
+          <div class="field">
+            <label for="mSubject">Subject</label>
+            <input type="text" id="mSubject" placeholder="e.g. Data Structures" required />
+          </div>
+          <div class="field">
+            <label for="sDate">Date</label>
+            <input type="date" id="sDate" required />
+          </div>
+          <div class="field">
+            <label for="sStatus">Status</label>
+            <select id="sStatus" required>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+              <option value="Late">Late</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <button type="submit" class="btn btn-primary btn-block">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-head">
+        <h2>Student Attendance History</h2>
+        <div class="search-box">
+          <select id="sFilterStudent"><option value="">All students</option></select>
+          <input type="text" id="sFilterSubject" placeholder="Filter by subject" style="min-width:160px;" />
+        </div>
+      </div>
+      <div class="card-body table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Reg. No.</th><th>Student</th><th>Course</th><th>Subject</th><th>Status</th><th>Marked By</th></tr></thead>
+          <tbody id="sHistoryBody"><tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Teacher Attendance</h2>
+        <div class="search-box"><select id="tFilterTeacher"><option value="">All teachers</option></select></div>
+      </div>
+      <div class="card-body">
+        <form id="markTeacherForm" class="field-row" style="align-items:end; margin-bottom:20px;">
+          <div class="field"><label for="tSelect">Teacher</label><select id="tSelect" required></select></div>
+          <div class="field"><label for="tDate">Date</label><input type="date" id="tDate" required /></div>
+          <div class="field">
+            <label for="tStatus">Status</label>
+            <select id="tStatus" required><option value="Present">Present</option><option value="Absent">Absent</option><option value="Late">Late</option></select>
+          </div>
+          <div class="field" style="margin-bottom:0;"><button type="submit" class="btn btn-primary btn-block">Save</button></div>
+        </form>
+        <div id="tMarkMsg" class="form-msg"></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Reg. No.</th><th>Teacher</th><th>Status</th></tr></thead>
+            <tbody id="tHistoryBody"><tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../js/admin.js"></script>
+<script>
+  function badgeFor(status) {
+    const cls = status === "Present" ? "badge-present" : status === "Absent" ? "badge-absent" : "badge-late";
+    return `<span class="badge ${cls}">${status}</span>`;
+  }
+
+  async function loadSummary() {
+    const courseId = document.getElementById("courseFilter").value;
+    const url = courseId ? `${API_BASE}/attendance/students/summary?courseId=${courseId}` : `${API_BASE}/attendance/students/summary`;
+    const res = await fetch(url, { credentials: "include" });
+    const data = await res.json();
+    document.getElementById("statOverall").textContent = data.overallPercentage + "%";
+    document.getElementById("statPresent").textContent = data.present;
+    document.getElementById("statAbsent").textContent = data.absent;
+
+    const body = document.getElementById("subjectWiseBody");
+    body.innerHTML = (data.subjectWise || []).length
+      ? data.subjectWise.map((s) => `<tr><td>${s.subject}</td><td>${s.total}</td><td>${s.percentage}%</td></tr>`).join("")
+      : `<tr><td colspan="3" style="text-align:center; color:var(--ink-soft);">No subject-wise data yet.</td></tr>`;
+  }
+
+  async function loadCourseDropdowns() {
+    const res = await fetch(`${API_BASE}/courses`, { credentials: "include" });
+    const data = await res.json();
+    const opts = (data.courses || []).map((c) => `<option value="${c.id}">${c.course_name}</option>`).join("");
+    document.getElementById("mCourse").innerHTML = opts;
+    document.getElementById("courseFilter").innerHTML = `<option value="">All courses</option>` + opts;
+  }
+
+  async function loadStudentDropdowns() {
+    const students = await fetchStudents();
+    const options = students.map((s) => `<option value="${s.id}">${s.student_reg_no} — ${s.name}</option>`).join("");
+    document.getElementById("sSelect").innerHTML = options;
+    document.getElementById("sFilterStudent").innerHTML = `<option value="">All students</option>` + options;
+  }
+
+  async function loadStudentHistory() {
+    const studentId = document.getElementById("sFilterStudent").value;
+    const subject = document.getElementById("sFilterSubject").value.trim();
+    const params = new URLSearchParams();
+    if (studentId) params.set("studentId", studentId);
+    if (subject) params.set("subject", subject);
+    const res = await fetch(`${API_BASE}/attendance/students?${params.toString()}`, { credentials: "include" });
+    const data = await res.json();
+    const body = document.getElementById("sHistoryBody");
+    body.innerHTML = (data.records || []).length
+      ? data.records.map((r) => `
+        <tr>
+          <td>${new Date(r.attendance_date).toLocaleDateString()}</td>
+          <td><span class="reg-no">${r.student_reg_no}</span></td>
+          <td>${r.student_name}</td>
+          <td>${r.course_name || "—"}</td>
+          <td>${r.subject_name || "—"}</td>
+          <td>${badgeFor(r.status)}</td>
+          <td style="text-transform:capitalize;">${r.marked_by}</td>
+        </tr>`).join("")
+      : `<tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">No records yet.</td></tr>`;
+  }
+
+  document.getElementById("courseFilter").addEventListener("change", loadSummary);
+  document.getElementById("sFilterStudent").addEventListener("change", loadStudentHistory);
+  document.getElementById("sFilterSubject").addEventListener("input", () => {
+    clearTimeout(window._subjTimer);
+    window._subjTimer = setTimeout(loadStudentHistory, 300);
+  });
+
+  document.getElementById("markStudentForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById("sMarkMsg");
+    const payload = {
+      studentId: document.getElementById("sSelect").value,
+      courseId: document.getElementById("mCourse").value,
+      subjectName: document.getElementById("mSubject").value.trim(),
+      date: document.getElementById("sDate").value,
+      status: document.getElementById("sStatus").value,
+    };
+    try {
+      const res = await fetch(`${API_BASE}/attendance/students`, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      msg.textContent = "Attendance saved."; msg.className = "form-msg success";
+      await loadStudentHistory();
+      await loadSummary();
+    } catch (err) {
+      msg.textContent = err.message; msg.className = "form-msg error";
+    }
+  });
+
+  // ---------- Teachers ----------
+  async function loadTeacherDropdowns() {
+    const res = await fetch(`${API_BASE}/teachers`, { credentials: "include" });
+    const data = await res.json();
+    const teachers = data.teachers || [];
+    const options = teachers.map((t) => `<option value="${t.id}">${t.teacher_reg_no} — ${t.name}</option>`).join("");
+    document.getElementById("tSelect").innerHTML = options;
+    document.getElementById("tFilterTeacher").innerHTML = `<option value="">All teachers</option>` + options;
+  }
+
+  async function loadTeacherHistory() {
+    const teacherId = document.getElementById("tFilterTeacher").value;
+    const url = teacherId ? `${API_BASE}/attendance/teachers?teacherId=${teacherId}` : `${API_BASE}/attendance/teachers`;
+    const res = await fetch(url, { credentials: "include" });
+    const data = await res.json();
+    const body = document.getElementById("tHistoryBody");
+    body.innerHTML = (data.records || []).length
+      ? data.records.map((r) => `
+        <tr>
+          <td>${new Date(r.attendance_date).toLocaleDateString()}</td>
+          <td><span class="reg-no">${r.teacher_reg_no}</span></td>
+          <td>${r.teacher_name}</td>
+          <td>${badgeFor(r.status)}</td>
+        </tr>`).join("")
+      : `<tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">No records yet.</td></tr>`;
+  }
+
+  document.getElementById("tFilterTeacher").addEventListener("change", loadTeacherHistory);
+
+  document.getElementById("markTeacherForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById("tMarkMsg");
+    const payload = {
+      teacherId: document.getElementById("tSelect").value,
+      date: document.getElementById("tDate").value,
+      status: document.getElementById("tStatus").value,
+    };
+    try {
+      const res = await fetch(`${API_BASE}/attendance/teachers`, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      msg.textContent = "Attendance saved."; msg.className = "form-msg success";
+      await loadTeacherHistory();
+    } catch (err) {
+      msg.textContent = err.message; msg.className = "form-msg error";
+    }
+  });
+
+  (async function init() {
+    await requireAdminSession();
+    await loadCourseDropdowns();
+    await loadStudentDropdowns();
+    await loadTeacherDropdowns();
+    await loadSummary();
+    await loadStudentHistory();
+    await loadTeacherHistory();
+  })();
+</script>
+</body>
+</html>

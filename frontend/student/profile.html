@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Profile — Student Manager</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<div class="dash">
+  <aside class="sidebar">
+    <div class="side-profile">
+      <div class="side-avatar js-student-initials">—</div>
+      <div class="side-profile-text">
+        <div class="name js-student-name">—</div>
+        <div class="regno js-student-regno">—</div>
+      </div>
+    </div>
+    <nav class="side-links sidebar-scroll">
+      <a class="side-link" href="student-dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <button class="side-link active" data-nav="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Profile
+      </button>
+      <a class="side-link" href="attendance.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+        Attendance
+      </a>
+      <a class="side-link" href="exams.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Exams
+      </a>
+      <a class="side-link" href="results.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 5-6"/></svg>
+        Results
+      </a>
+      <a class="side-link" href="timetable.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        Timetable
+      </a>
+      <a class="side-link" href="payments.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+        Payments
+      </a>
+    </nav>
+    <div class="side-user">
+      <button class="btn btn-outline btn-sm btn-block" id="logoutBtn">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-head">
+      <div>
+        <h1>My Profile</h1>
+        <p>View your details below. You can update your address and contact number.</p>
+      </div>
+      <span class="badge badge-student">Student</span>
+    </div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-head"><h2>Academic Details</h2></div>
+      <div class="card-body">
+        <div class="profile-grid" id="profileGrid">
+          <div class="profile-item"><div class="k">Loading</div><div class="v">Please wait...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Update Contact Details</h2></div>
+      <div class="card-body">
+        <div id="formMsg" class="form-msg"></div>
+        <form id="updateForm">
+          <div class="field-row">
+            <div class="field">
+              <label for="contactNo">Contact number</label>
+              <input type="text" id="contactNo" placeholder="07XXXXXXXX" />
+            </div>
+            <div class="field">
+              <label for="address">Address</label>
+              <input type="text" id="address" placeholder="Address" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Save changes</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../js/student-common.js"></script>
+<script>
+  const profileGrid = document.getElementById("profileGrid");
+  const updateForm = document.getElementById("updateForm");
+  const formMsg = document.getElementById("formMsg");
+  const saveBtn = document.getElementById("saveBtn");
+
+  function showMsg(text, type) {
+    formMsg.textContent = text;
+    formMsg.className = `form-msg ${type}`;
+  }
+  function fmtDate(d) {
+    return d ? new Date(d).toLocaleDateString() : "—";
+  }
+
+  async function loadProfile() {
+    const res = await fetch(`${API_BASE}/students/me/profile`, { credentials: "include" });
+    const data = await res.json();
+    if (!res.ok) {
+      profileGrid.innerHTML = `<div class="profile-item"><div class="k">Error</div><div class="v">${data.message}</div></div>`;
+      return;
+    }
+    const s = data.student;
+    profileGrid.innerHTML = `
+      <div class="profile-item"><div class="k">Full name</div><div class="v">${s.name}</div></div>
+      <div class="profile-item"><div class="k">Registration No.</div><div class="v">${s.student_reg_no}</div></div>
+      <div class="profile-item"><div class="k">Email</div><div class="v">${s.email}</div></div>
+      <div class="profile-item"><div class="k">Course</div><div class="v">${s.course || "—"}</div></div>
+      <div class="profile-item"><div class="k">Date of birth</div><div class="v">${fmtDate(s.dob)}</div></div>
+      <div class="profile-item"><div class="k">Enrolled on</div><div class="v">${fmtDate(s.enrollment_date)}</div></div>
+    `;
+    document.getElementById("contactNo").value = s.contact_no || "";
+    document.getElementById("address").value = s.address || "";
+  }
+
+  updateForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+    const payload = {
+      contactNo: document.getElementById("contactNo").value.trim(),
+      address: document.getElementById("address").value.trim(),
+    };
+    try {
+      const res = await fetch(`${API_BASE}/students/me/profile`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Could not update profile.");
+      showMsg("Profile updated successfully.", "success");
+    } catch (err) {
+      showMsg(err.message, "error");
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save changes";
+    }
+  });
+
+  (async function init() {
+    const user = await requireStudentSession();
+    if (!user) return;
+    await loadProfile();
+  })();
+</script>
+</body>
+</html>

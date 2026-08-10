@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Exams — Admin</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<div class="dash">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">A</span> Admin</div>
+    <nav class="side-links sidebar-scroll">
+      <a class="side-link" href="admin-dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a class="side-link" href="manage-students.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Students
+      </a>
+      <a class="side-link" href="teachers.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+        Teachers
+      </a>
+      <a class="side-link" href="attendance.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+        Attendance
+      </a>
+      <a class="side-link" href="courses.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Courses
+      </a>
+      <button class="side-link active" data-nav="exams">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Exams
+      </button>
+      <a class="side-link" href="timetable.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        Timetable
+      </a>
+
+      <a class="side-link" href="payments.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+        Payments
+      </a>
+    </nav>
+    <div class="side-user">
+      <div class="who">Logged in as<br /><strong id="adminName">—</strong></div>
+      <button class="btn btn-outline btn-sm btn-block" id="logoutBtn">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-head">
+      <div>
+        <h1>Exams</h1>
+        <p>Schedule exams, enter marks, and review results.</p>
+      </div>
+      <button class="btn btn-primary" id="openScheduleModal">+ Schedule Exam</button>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="label">Total Exams Conducted</div><div class="value" id="statTotalExams">—</div></div>
+      <div class="stat-card"><div class="label">Pass Rate</div><div class="value" id="statPassRate">—</div></div>
+      <div class="stat-card"><div class="label">Top Rankers (90+)</div><div class="value" id="statTopRankers">—</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:22px;">
+      <div class="card-head"><h2>Exam Schedule</h2></div>
+      <div class="card-body table-wrap">
+        <table>
+          <thead><tr><th>Exam Name</th><th>Course</th><th>Type</th><th>Date</th><th>Time</th><th>Venue</th><th></th></tr></thead>
+          <tbody id="examsTableBody"><tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Exam Directory &amp; Results</h2>
+        <div class="search-box">
+          <input type="text" id="resultsSearch" placeholder="Search by student, exam, or reg. no." />
+          <button class="btn btn-ghost btn-sm" id="exportCsvBtn">Export CSV</button>
+        </div>
+      </div>
+      <div class="card-body table-wrap">
+        <table>
+          <thead><tr><th>Exam</th><th>Course</th><th>Reg. No.</th><th>Student</th><th>Marks</th><th>Grade</th><th>Attendance</th></tr></thead>
+          <tbody id="resultsTableBody"><tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Schedule Exam Modal -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal">
+    <div class="modal-head"><h2>Schedule New Exam</h2><button class="modal-close" id="closeScheduleModal">&times;</button></div>
+    <div class="modal-body">
+      <div id="scheduleMsg" class="form-msg"></div>
+      <form id="scheduleForm">
+        <div class="field"><label for="eName">Exam Name</label><input type="text" id="eName" required /></div>
+        <div class="field-row">
+          <div class="field"><label for="eCourse">Course / Subject</label><select id="eCourse" required></select></div>
+          <div class="field">
+            <label for="eType">Exam Type</label>
+            <select id="eType" required>
+              <option value="Class Test">Class Test</option>
+              <option value="Mid-Exam">Mid-Exam</option>
+              <option value="Final Exam">Final Exam</option>
+              <option value="Assignment">Assignment</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="eDate">Date</label><input type="date" id="eDate" /></div>
+          <div class="field"><label for="eTime">Time</label><input type="time" id="eTime" /></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="eDuration">Duration (minutes)</label><input type="number" id="eDuration" min="1" /></div>
+          <div class="field"><label for="eVenue">Venue (Exam Hall)</label><input type="text" id="eVenue" /></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="cancelSchedule">Cancel</button>
+      <button class="btn btn-primary" id="saveScheduleBtn">Schedule Exam</button>
+    </div>
+  </div>
+</div>
+
+<!-- Marks Entry Modal -->
+<div class="modal-overlay" id="marksModal">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-head"><h2 id="marksModalTitle">Enter Marks</h2><button class="modal-close" id="closeMarksModal">&times;</button></div>
+    <div class="modal-body">
+      <div id="marksMsg" class="form-msg"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Reg. No.</th><th>Student</th><th style="width:100px;">Marks (0-100)</th><th style="width:110px;">Attendance</th><th>Grade</th></tr></thead>
+          <tbody id="marksTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="closeMarksModal2">Close</button>
+      <button class="btn btn-primary" id="saveMarksBtn">Save All Marks</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/admin.js"></script>
+<script>
+  let allCourses = [];
+  let allExams = [];
+  let currentExamId = null;
+
+  function gradeBadge(grade) { return grade ? `<span class="badge badge-grade">${grade}</span>` : "—"; }
+  function statusBadge(status) {
+    if (!status) return "—";
+    return `<span class="badge ${status === "Pass" ? "badge-pass" : "badge-fail"}">${status}</span>`;
+  }
+
+  async function loadCourseDropdown() {
+    const res = await fetch(`${API_BASE}/courses`, { credentials: "include" });
+    const data = await res.json();
+    allCourses = data.courses || [];
+    document.getElementById("eCourse").innerHTML = allCourses.map((c) => `<option value="${c.id}">${c.course_name}</option>`).join("");
+  }
+
+  async function loadSummary() {
+    const res = await fetch(`${API_BASE}/exams/summary`, { credentials: "include" });
+    const data = await res.json();
+    document.getElementById("statTotalExams").textContent = data.totalExams ?? 0;
+    document.getElementById("statPassRate").textContent = (data.passRate ?? 0) + "%";
+    document.getElementById("statTopRankers").textContent = data.topRankers ?? 0;
+  }
+
+  async function loadExams() {
+    const res = await fetch(`${API_BASE}/exams`, { credentials: "include" });
+    const data = await res.json();
+    allExams = data.exams || [];
+    const body = document.getElementById("examsTableBody");
+    body.innerHTML = allExams.length
+      ? allExams.map((e) => `
+        <tr>
+          <td>${e.exam_name}</td>
+          <td>${e.course_name}</td>
+          <td>${e.exam_type}</td>
+          <td>${e.exam_date ? new Date(e.exam_date).toLocaleDateString() : "—"}</td>
+          <td>${e.exam_time || "—"}</td>
+          <td>${e.venue || "—"}</td>
+          <td>
+            <div class="row-actions">
+              <button class="btn btn-ghost btn-sm" onclick="openMarksModal(${e.id})">Enter Marks</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteExam(${e.id}, '${e.exam_name.replace(/'/g, "")}')">Delete</button>
+            </div>
+          </td>
+        </tr>`).join("")
+      : `<tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">No exams scheduled yet.</td></tr>`;
+  }
+
+  window.deleteExam = async function (id, name) {
+    if (!confirm(`Delete "${name}"? This also removes any marks entered for it.`)) return;
+    const res = await fetch(`${API_BASE}/exams/${id}`, { method: "DELETE", credentials: "include" });
+    const data = await res.json();
+    if (!res.ok) return alert(data.message);
+    await loadExams();
+    await loadSummary();
+    await loadResults();
+  };
+
+  // ---------- Schedule modal ----------
+  const scheduleModal = document.getElementById("scheduleModal");
+  document.getElementById("openScheduleModal").addEventListener("click", () => {
+    document.getElementById("scheduleForm").reset();
+    document.getElementById("scheduleMsg").className = "form-msg";
+    scheduleModal.classList.add("open");
+  });
+  function closeScheduleModal() { scheduleModal.classList.remove("open"); }
+  document.getElementById("closeScheduleModal").addEventListener("click", closeScheduleModal);
+  document.getElementById("cancelSchedule").addEventListener("click", closeScheduleModal);
+  scheduleModal.addEventListener("click", (e) => { if (e.target === scheduleModal) closeScheduleModal(); });
+
+  document.getElementById("saveScheduleBtn").addEventListener("click", async () => {
+    const form = document.getElementById("scheduleForm");
+    if (!form.reportValidity()) return;
+    const payload = {
+      examName: document.getElementById("eName").value.trim(),
+      courseId: document.getElementById("eCourse").value,
+      examType: document.getElementById("eType").value,
+      examDate: document.getElementById("eDate").value || null,
+      examTime: document.getElementById("eTime").value || null,
+      durationMinutes: document.getElementById("eDuration").value || null,
+      venue: document.getElementById("eVenue").value.trim(),
+    };
+    const msg = document.getElementById("scheduleMsg");
+    try {
+      const res = await fetch(`${API_BASE}/exams`, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      closeScheduleModal();
+      await loadExams();
+      await loadSummary();
+    } catch (err) {
+      msg.textContent = err.message; msg.className = "form-msg error";
+    }
+  });
+
+  // ---------- Marks modal ----------
+  const marksModal = document.getElementById("marksModal");
+  window.openMarksModal = async function (examId) {
+    currentExamId = examId;
+    const res = await fetch(`${API_BASE}/exams/${examId}/students`, { credentials: "include" });
+    const data = await res.json();
+    document.getElementById("marksModalTitle").textContent = `Enter Marks — ${data.exam.exam_name}`;
+    document.getElementById("marksMsg").className = "form-msg";
+
+    const body = document.getElementById("marksTableBody");
+    body.innerHTML = data.students.length
+      ? data.students.map((s) => `
+        <tr data-student-id="${s.student_id}">
+          <td><span class="reg-no">${s.student_reg_no}</span></td>
+          <td>${s.student_name}</td>
+          <td><input type="number" min="0" max="100" step="0.5" class="marks-input" value="${s.marks ?? ""}" /></td>
+          <td>
+            <select class="attendance-input">
+              <option value="Present" ${s.attendance !== "Absent" ? "selected" : ""}>Present</option>
+              <option value="Absent" ${s.attendance === "Absent" ? "selected" : ""}>Absent</option>
+            </select>
+          </td>
+          <td class="grade-cell">${gradeBadge(s.grade)}</td>
+        </tr>`).join("")
+      : `<tr><td colspan="5" style="text-align:center; color:var(--ink-soft);">No students enrolled in this course yet.</td></tr>`;
+
+    marksModal.classList.add("open");
+  };
+  function closeMarksModal() { marksModal.classList.remove("open"); }
+  document.getElementById("closeMarksModal").addEventListener("click", closeMarksModal);
+  document.getElementById("closeMarksModal2").addEventListener("click", closeMarksModal);
+  marksModal.addEventListener("click", (e) => { if (e.target === marksModal) closeMarksModal(); });
+
+  document.getElementById("saveMarksBtn").addEventListener("click", async () => {
+    const rows = document.querySelectorAll("#marksTableBody tr[data-student-id]");
+    const msg = document.getElementById("marksMsg");
+    let saved = 0, skipped = 0, failed = 0;
+
+    for (const row of rows) {
+      const studentId = row.dataset.studentId;
+      const input = row.querySelector(".marks-input");
+      const attendance = row.querySelector(".attendance-input").value;
+      const val = input.value.trim();
+      if (val === "") { skipped++; continue; }
+      try {
+        const res = await fetch(`${API_BASE}/exams/${currentExamId}/marks`, {
+          method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include",
+          body: JSON.stringify({ studentId, marks: val, attendance }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+        row.querySelector(".grade-cell").innerHTML = gradeBadge(data.grade);
+        saved++;
+      } catch (err) { failed++; }
+    }
+
+    msg.textContent = `Saved ${saved} mark(s).${skipped ? ` ${skipped} left blank.` : ""}${failed ? ` ${failed} failed.` : ""}`;
+    msg.className = failed ? "form-msg error" : "form-msg success";
+    await loadSummary();
+    await loadResults();
+  });
+
+  // ---------- Results directory ----------
+  function attendanceSelect(resultId, attendance) {
+    return `<select class="badge-select" onchange="updateAttendance(${resultId}, this.value)">
+      <option value="Present" ${attendance !== "Absent" ? "selected" : ""}>Present</option>
+      <option value="Absent" ${attendance === "Absent" ? "selected" : ""}>Absent</option>
+    </select>`;
+  }
+
+  window.updateAttendance = async function (resultId, value) {
+    try {
+      const res = await fetch(`${API_BASE}/exams/results/${resultId}/attendance`, {
+        method: "PUT", headers: { "Content-Type": "application/json" }, credentials: "include",
+        body: JSON.stringify({ attendance: value }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+    } catch (err) { alert(err.message); }
+  };
+
+  async function loadResults() {
+    const search = document.getElementById("resultsSearch").value.trim();
+    const url = search ? `${API_BASE}/exams/results?search=${encodeURIComponent(search)}` : `${API_BASE}/exams/results`;
+    const res = await fetch(url, { credentials: "include" });
+    const data = await res.json();
+    const body = document.getElementById("resultsTableBody");
+    body.innerHTML = (data.results || []).length
+      ? data.results.map((r) => `
+        <tr>
+          <td>${r.exam_name}</td>
+          <td>${r.course_name}</td>
+          <td><span class="reg-no">${r.student_reg_no}</span></td>
+          <td>${r.student_name}</td>
+          <td>${r.marks}</td>
+          <td>${gradeBadge(r.grade)}</td>
+          <td>${attendanceSelect(r.id, r.attendance)}</td>
+        </tr>`).join("")
+      : `<tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">No results yet.</td></tr>`;
+  }
+
+  let searchTimer;
+  document.getElementById("resultsSearch").addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(loadResults, 300);
+  });
+
+  document.getElementById("exportCsvBtn").addEventListener("click", async () => {
+    const res = await fetch(`${API_BASE}/exams/results`, { credentials: "include" });
+    const data = await res.json();
+    const rows = data.results || [];
+    const header = ["Exam", "Course", "Reg No", "Student", "Marks", "Grade", "Attendance"];
+    const csvLines = [header.join(",")];
+    rows.forEach((r) => {
+      csvLines.push([r.exam_name, r.course_name, r.student_reg_no, r.student_name, r.marks, r.grade, r.attendance]
+        .map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","));
+    });
+    const blob = new Blob([csvLines.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "exam-results.csv"; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  (async function init() {
+    await requireAdminSession();
+    await loadCourseDropdown();
+    await loadSummary();
+    await loadExams();
+    await loadResults();
+  })();
+</script>
+</body>
+</html>
