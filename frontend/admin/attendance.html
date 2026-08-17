@@ -92,8 +92,8 @@
             <select id="mCourse" required></select>
           </div>
           <div class="field">
-            <label for="mSubject">Subject</label>
-            <input type="text" id="mSubject" placeholder="e.g. Data Structures" required />
+            <label for="mSubject">Subject (Module)</label>
+            <select id="mSubject" required><option value="">Select a course first...</option></select>
           </div>
           <div class="field">
             <label for="sDate">Date</label>
@@ -186,6 +186,22 @@
     document.getElementById("mCourse").innerHTML = opts;
     document.getElementById("courseFilter").innerHTML = `<option value="">All courses</option>` + opts;
   }
+
+  async function loadModuleOptionsForMark(courseId) {
+    const subjectSelect = document.getElementById("mSubject");
+    if (!courseId) {
+      subjectSelect.innerHTML = `<option value="">Select a course first...</option>`;
+      return;
+    }
+    subjectSelect.innerHTML = `<option value="">Loading...</option>`;
+    const res = await fetch(`${API_BASE}/courses/${courseId}/modules`, { credentials: "include" });
+    const data = await res.json();
+    const modules = data.modules || [];
+    subjectSelect.innerHTML = modules.length
+      ? `<option value="">Select a module...</option>` + modules.map((m) => `<option value="${m.module_name}">${m.module_name}</option>`).join("")
+      : `<option value="">No modules for this course yet — add some in Courses tab</option>`;
+  }
+  document.getElementById("mCourse").addEventListener("change", (e) => loadModuleOptionsForMark(e.target.value));
 
   async function loadStudentDropdowns() {
     const students = await fetchStudents();
@@ -297,6 +313,7 @@
   (async function init() {
     await requireAdminSession();
     await loadCourseDropdowns();
+    await loadModuleOptionsForMark(document.getElementById("mCourse").value);
     await loadStudentDropdowns();
     await loadTeacherDropdowns();
     await loadSummary();

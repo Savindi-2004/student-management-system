@@ -12,13 +12,14 @@ function calculateGrade(marks) {
   return { grade, status };
 }
 
-// GET /api/exams - list exams with course name
+// GET /api/exams - list exams with course + module name
 async function getAllExams(req, res) {
   try {
     const [rows] = await pool.query(
-      `SELECT e.*, c.course_name, c.course_code
+      `SELECT e.*, c.course_name, c.course_code, m.module_name
        FROM exams e
        JOIN courses c ON e.course_id = c.id
+       LEFT JOIN modules m ON e.module_id = m.id
        ORDER BY e.exam_date DESC, e.id DESC`
     );
     res.json({ exams: rows });
@@ -31,14 +32,14 @@ async function getAllExams(req, res) {
 // POST /api/exams - create a new scheduled exam
 async function createExam(req, res) {
   try {
-    const { examName, courseId, examType, examDate, examTime, durationMinutes, venue } = req.body;
+    const { examName, courseId, moduleId, examType, examDate, examTime, durationMinutes, venue } = req.body;
     if (!examName || !courseId || !examType) {
       return res.status(400).json({ message: "Exam name, course and exam type are required." });
     }
     const [result] = await pool.query(
-      `INSERT INTO exams (exam_name, course_id, exam_type, exam_date, exam_time, duration_minutes, venue)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [examName, courseId, examType, examDate || null, examTime || null, durationMinutes || null, venue || null]
+      `INSERT INTO exams (exam_name, course_id, module_id, exam_type, exam_date, exam_time, duration_minutes, venue)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [examName, courseId, moduleId || null, examType, examDate || null, examTime || null, durationMinutes || null, venue || null]
     );
     res.status(201).json({ message: "Exam scheduled successfully.", examId: result.insertId });
   } catch (err) {
@@ -50,14 +51,14 @@ async function createExam(req, res) {
 // PUT /api/exams/:id
 async function updateExam(req, res) {
   try {
-    const { examName, examType, examDate, examTime, durationMinutes, venue } = req.body;
+    const { examName, moduleId, examType, examDate, examTime, durationMinutes, venue } = req.body;
     const [rows] = await pool.query("SELECT id FROM exams WHERE id = ?", [req.params.id]);
     if (rows.length === 0) return res.status(404).json({ message: "Exam not found." });
 
     await pool.query(
-      `UPDATE exams SET exam_name = ?, exam_type = ?, exam_date = ?, exam_time = ?, duration_minutes = ?, venue = ?
+      `UPDATE exams SET exam_name = ?, module_id = ?, exam_type = ?, exam_date = ?, exam_time = ?, duration_minutes = ?, venue = ?
        WHERE id = ?`,
-      [examName, examType, examDate || null, examTime || null, durationMinutes || null, venue || null, req.params.id]
+      [examName, moduleId || null, examType, examDate || null, examTime || null, durationMinutes || null, venue || null, req.params.id]
     );
     res.json({ message: "Exam updated successfully." });
   } catch (err) {
@@ -153,11 +154,12 @@ async function getResults(req, res) {
     const { examId, courseId, search } = req.query;
     let sql = `SELECT r.id, r.marks, r.grade, r.status, r.attendance, r.created_at,
                       e.id AS exam_id, e.exam_name, e.exam_type, e.exam_date,
-                      c.id AS course_id, c.course_name,
+                      c.id AS course_id, c.course_name, m.module_name,
                       s.id AS student_id, s.student_reg_no, u.name AS student_name
                FROM exam_results r
                JOIN exams e ON r.exam_id = e.id
                JOIN courses c ON e.course_id = c.id
+               LEFT JOIN modules m ON e.module_id = m.id
                JOIN students s ON r.student_id = s.id
                JOIN users u ON s.user_id = u.id
                WHERE 1=1`;
@@ -204,9 +206,10 @@ async function getMyExams(req, res) {
     if (studentRows.length === 0) return res.json({ exams: [] });
     const courseName = studentRows[0].course;
 
-    const [rows] = await pool.query(
-      `SELECT e.*, c.course_name FROM exams e
+   const [rows] = await pool.query(
+      `SELECT e.*, c.course_name, m.module_name FROM exams e
        JOIN courses c ON e.course_id = c.id
+       LEFT JOIN modules m ON e.module_id = m.id
        WHERE c.course_name = ?
        ORDER BY e.exam_date ASC, e.id ASC`,
       [courseName]

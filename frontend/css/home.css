@@ -102,7 +102,6 @@
     linear-gradient(rgba(12,21,38,0.75), rgba(12,21,38,0.85)),
     radial-gradient(700px 400px at 88% 15%, rgba(85,193,240,0.14), transparent 60%),
     radial-gradient(600px 500px at 10% 90%, rgba(143,107,246,0.10), transparent 60%);
-    pointer-events: none;
   }
 .ep-section-head { text-align: center; max-width: 640px; margin: 0 auto 48px; }
 .ep-section-head h2 { font-size: 2.4rem; color: var(--ep-blue-soft); font-weight: 800; }
@@ -181,8 +180,19 @@
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: -1;
+  pointer-events: none;
   background: url('https://img.magnific.com/free-vector/geometric-science-education-background-vector-gradient-blue-digital-remix_53876-125993.jpg') center/cover no-repeat;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+/* Force the faculty tab buttons to always receive clicks, regardless of
+   any overlapping decorative element (background layers, hero box, etc.) */
+.ep-tabs {
+  position: relative;
+  z-index: 10;
+}
+.ep-tab {
+  position: relative;
+  z-index: 10;
 }

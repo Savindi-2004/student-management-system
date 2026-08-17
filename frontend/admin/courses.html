@@ -74,18 +74,26 @@
       </div>
     </div>
 
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-body" style="padding:20px 22px;">
+        <div class="field" style="margin-bottom:0; max-width:340px;">
+          <label for="facultyFilter">Faculty</label>
+          <select id="facultyFilter"><option value="">Select a faculty...</option></select>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-head">
-  <h2>All Courses</h2>
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Search by code, name, or faculty" />
-  </div>
-</div>
-</div>
+        <h2>All Courses</h2>
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search by ID or name" />
+        </div>
+      </div>
       <div class="card-body table-wrap">
         <table>
-          <thead><tr><th>Code</th><th>Course Name</th><th>Faculty</th><th>Enrolled</th><th>Description</th><th></th></tr></thead>
-          <tbody id="coursesTableBody"><tr><td colspan="6" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
+          <thead><tr><th>Code</th><th>Course Name</th><th>Enrolled</th><th>Description</th><th></th></tr></thead>
+          <tbody id="coursesTableBody"><tr><td colspan="5" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -107,9 +115,37 @@
         <div class="field"><label for="cDesc">Description</label><textarea id="cDesc" rows="3"></textarea></div>
       </form>
     </div>
-    <div class="modal-foot">
+   <div class="modal-foot">
       <button class="btn btn-ghost" id="cancelModal">Cancel</button>
       <button class="btn btn-primary" id="saveCourseBtn">Save Course</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modules Modal -->
+<div class="modal-overlay" id="modulesModal">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-head"><h2 id="modulesModalTitle">Modules</h2><button class="modal-close" id="closeModulesModal">&times;</button></div>
+    <div class="modal-body">
+      <div id="modulesMsg" class="form-msg"></div>
+
+      <form id="moduleForm" class="field-row" style="align-items:end; margin-bottom:18px;">
+        <input type="hidden" id="moduleId" />
+        <div class="field"><label for="mCode">Code</label><input type="text" id="mCode" placeholder="e.g. CS101-M1" /></div>
+        <div class="field"><label for="mName">Module name</label><input type="text" id="mName" placeholder="e.g. Data Structures" required /></div>
+        <div class="field"><label for="mCredits">Credits</label><input type="number" id="mCredits" min="0" style="width:80px;" /></div>
+        <div class="field" style="margin-bottom:0;"><button type="submit" class="btn btn-primary btn-block" id="saveModuleBtn">Add</button></div>
+      </form>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Code</th><th>Module</th><th>Credits</th><th></th></tr></thead>
+          <tbody id="modulesTableBody"><tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="closeModulesModal2">Close</button>
     </div>
   </div>
 </div>
@@ -124,18 +160,18 @@
 
   function renderTable(list) {
     if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><h3>No courses yet</h3><p>Add your first course to get started.</p></div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><h3>No courses found</h3><p>Try a different search, or select another faculty.</p></div></td></tr>`;
       return;
     }
     tbody.innerHTML = list.map((c) => `
       <tr>
         <td><span class="reg-no">${c.course_code}</span></td>
         <td>${c.course_name}</td>
-        <td>${c.faculty || "—"}</td>
         <td>${c.enrolled_count}</td>
         <td style="max-width:260px; white-space:normal; color:var(--ink-soft); font-size:0.86rem;">${c.description || "—"}</td>
         <td>
           <div class="row-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openModulesModal(${c.id}, '${c.course_name.replace(/'/g, "")}')">Modules</button>
             <button class="btn btn-ghost btn-sm" onclick="openEditModal(${c.id})">Edit</button>
             <button class="btn btn-danger btn-sm" onclick="handleDelete(${c.id}, '${c.course_name.replace(/'/g, "")}')">Delete</button>
           </div>
@@ -155,24 +191,33 @@
       const res = await fetch(`${API_BASE}/courses`, { credentials: "include" });
       const data = await res.json();
       allCourses = data.courses || [];
-      applySearch();
+
+      const faculties = [...new Set(allCourses.map((c) => c.faculty).filter(Boolean))].sort();
+      document.getElementById("facultyFilter").innerHTML =
+        `<option value="">Select a faculty...</option>` + faculties.map((f) => `<option value="${f}">${f}</option>`).join("");
+
+      applyFilters();
     } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--danger);">Could not load courses.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--danger);">Could not load courses.</td></tr>`;
     }
   }
-function applySearch() {
+
+  function applyFilters() {
+    const faculty = document.getElementById("facultyFilter").value;
+    if (!faculty) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><h3>Select a faculty</h3><p>Choose a faculty above to view its courses.</p></div></td></tr>`;
+      return;
+    }
     const q = document.getElementById("searchInput").value.toLowerCase().trim();
-    const filtered = q
-      ? allCourses.filter(
-          (c) =>
-            c.course_code.toLowerCase().includes(q) ||
-            c.course_name.toLowerCase().includes(q) ||
-            (c.faculty || "").toLowerCase().includes(q)
-        )
-      : allCourses;
+    const filtered = allCourses.filter((c) => {
+      const matchesFaculty = c.faculty === faculty;
+      const matchesSearch = !q || c.course_code.toLowerCase().includes(q) || c.course_name.toLowerCase().includes(q);
+      return matchesFaculty && matchesSearch;
+    });
     renderTable(filtered);
   }
-  document.getElementById("searchInput").addEventListener("input", applySearch);
+  document.getElementById("facultyFilter").addEventListener("change", applyFilters);
+  document.getElementById("searchInput").addEventListener("input", applyFilters);
   function resetForm() {
     document.getElementById("courseForm").reset();
     document.getElementById("courseId").value = "";
@@ -245,6 +290,95 @@ function applySearch() {
       saveBtn.disabled = false; saveBtn.textContent = "Save Course";
     }
   });
+  // ---------- Modules ----------
+  let currentModulesCourseId = null;
+  const modulesModal = document.getElementById("modulesModal");
+  const modulesMsg = document.getElementById("modulesMsg");
+  const moduleForm = document.getElementById("moduleForm");
+  const saveModuleBtn = document.getElementById("saveModuleBtn");
+
+  window.openModulesModal = async function (courseId, courseName) {
+    currentModulesCourseId = courseId;
+    document.getElementById("modulesModalTitle").textContent = `Modules — ${courseName}`;
+    resetModuleForm();
+    modulesModal.classList.add("open");
+    await loadModules();
+  };
+
+  function resetModuleForm() {
+    moduleForm.reset();
+    document.getElementById("moduleId").value = "";
+    saveModuleBtn.textContent = "Add";
+    modulesMsg.className = "form-msg";
+  }
+
+  async function loadModules() {
+    const body = document.getElementById("modulesTableBody");
+    try {
+      const res = await fetch(`${API_BASE}/courses/${currentModulesCourseId}/modules`, { credentials: "include" });
+      const data = await res.json();
+      const modules = data.modules || [];
+      body.innerHTML = modules.length
+        ? modules.map((m) => `
+          <tr>
+            <td><span class="reg-no">${m.module_code || "—"}</span></td>
+            <td>${m.module_name}</td>
+            <td>${m.credits ?? "—"}</td>
+            <td>
+              <div class="row-actions">
+                <button class="btn btn-ghost btn-sm" onclick="editModule(${m.id}, '${(m.module_code || "").replace(/'/g, "")}', '${m.module_name.replace(/'/g, "")}', ${m.credits ?? "null"})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteModule(${m.id})">Delete</button>
+              </div>
+            </td>
+          </tr>`).join("")
+        : `<tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">No modules added yet.</td></tr>`;
+    } catch (err) {
+      body.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--danger);">Could not load modules.</td></tr>`;
+    }
+  }
+
+  window.editModule = function (id, code, name, credits) {
+    document.getElementById("moduleId").value = id;
+    document.getElementById("mCode").value = code;
+    document.getElementById("mName").value = name;
+    document.getElementById("mCredits").value = credits ?? "";
+    saveModuleBtn.textContent = "Update";
+  };
+
+  window.deleteModule = async function (id) {
+    if (!confirm("Remove this module?")) return;
+    const res = await fetch(`${API_BASE}/modules/${id}`, { method: "DELETE", credentials: "include" });
+    const data = await res.json();
+    if (!res.ok) return alert(data.message);
+    await loadModules();
+  };
+
+  moduleForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = document.getElementById("moduleId").value;
+    const payload = {
+      moduleCode: document.getElementById("mCode").value.trim(),
+      moduleName: document.getElementById("mName").value.trim(),
+      credits: document.getElementById("mCredits").value || null,
+    };
+    try {
+      const url = id ? `${API_BASE}/modules/${id}` : `${API_BASE}/courses/${currentModulesCourseId}/modules`;
+      const method = id ? "PUT" : "POST";
+      const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      resetModuleForm();
+      await loadModules();
+    } catch (err) {
+      modulesMsg.textContent = err.message;
+      modulesMsg.className = "form-msg error";
+    }
+  });
+
+  function closeModulesModal() { modulesModal.classList.remove("open"); }
+  document.getElementById("closeModulesModal").addEventListener("click", closeModulesModal);
+  document.getElementById("closeModulesModal2").addEventListener("click", closeModulesModal);
+  modulesModal.addEventListener("click", (e) => { if (e.target === modulesModal) closeModulesModal(); });
 
   (async function init() {
     await requireAdminSession();

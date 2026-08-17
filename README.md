@@ -112,9 +112,10 @@ Sessions are managed with `express-session`, stored server-side and tied to
 Grade boundaries (Exams module): A ≥ 75, B ≥ 60, C ≥ 50, otherwise F. Pass
   is marks ≥ 50. These are simple assumptions and can be changed in
   `backend/controllers/examController.js` (`calculateGrade`).
-Payment reminders and receipts are **not connected to a real SMS/Email
-  provider** — no such credentials are configured. Clicking "Remind" just
-  logs the action and timestamps it in the database. Wiring it up to a real
+Payment reminders are not sent via a real SMS/Email provider — no such
+  credentials are configured. Instead, clicking "Remind" logs the action and timestamps it in the database (`reminder_sent_at`), and the student sees an in-app notification banner on their Dashboard the next time they log in
+  (with a link to their Payments page). The banner automatically clears once
+  the admin marks that payment as "Paid". Wiring this up to a real SMS/Email
   provider (e.g. Twilio for SMS, Nodemailer for Email) is a natural next step
   if you have your own API keys.
 Student attendance can be marked two ways: by the admin directly (Attendance

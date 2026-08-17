@@ -40,6 +40,18 @@ CREATE TABLE IF NOT EXISTS courses (
     description VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+-- Table: modules
+-- Individual subjects/modules that make up a course 
+CREATE TABLE IF NOT EXISTS modules (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT NOT NULL,
+    module_code VARCHAR(20),
+    module_name VARCHAR(150) NOT NULL,
+    description VARCHAR(500),
+    credits INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+);
 
 -- Table: teachers
 -- Teacher records managed by the admin (no login account of their own)
@@ -108,13 +120,15 @@ CREATE TABLE IF NOT EXISTS exams (
     id INT AUTO_INCREMENT PRIMARY KEY,
     exam_name VARCHAR(150) NOT NULL,
     course_id INT NOT NULL,
+    module_id INT,
     exam_type ENUM('Class Test', 'Mid-Exam', 'Final Exam', 'Assignment') NOT NULL DEFAULT 'Class Test',
     exam_date DATE,
     exam_time TIME,
     duration_minutes INT,
     venue VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+    FOREIGN KEY (module_id) REFERENCES modules(id) ON DELETE SET NULL
 );
 
 -- Table: exam_results

@@ -11,6 +11,7 @@ const attendanceRoutes = require("./routes/attendanceRoutes");
 const examRoutes = require("./routes/examRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const timetableRoutes = require("./routes/timetableRoutes");
+const moduleRoutes = require("./routes/moduleRoutes");
 const publicRoutes = require("./routes/publicRoutes");
 const { requireAuth } = require("./middleware/authMiddleware");
 
@@ -45,6 +46,7 @@ app.use("/api/attendance", requireAuth, attendanceRoutes);
 app.use("/api/exams", requireAuth, examRoutes);
 app.use("/api/payments", requireAuth, paymentRoutes);
 app.use("/api/timetable", requireAuth, timetableRoutes);
+app.use("/api/modules", requireAuth, moduleRoutes);
 
 // Fallback for unknown API routes
 app.use("/api", (req, res) => {

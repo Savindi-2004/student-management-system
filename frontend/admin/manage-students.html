@@ -61,6 +61,15 @@
       <button class="btn btn-primary" id="openAddModal">+ Add Student</button>
     </div>
 
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-body" style="padding:20px 22px;">
+        <div class="field" style="margin-bottom:0; max-width:340px;">
+          <label for="facultyFilter">Faculty</label>
+          <select id="facultyFilter"><option value="">Select a faculty...</option></select>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-head">
         <h2>All Students</h2>
@@ -151,6 +160,7 @@
 <script src="../js/admin.js"></script>
 <script>
   let allStudents = [];
+  let allCourses = [];
   const tbody = document.getElementById("studentsTableBody");
   const modal = document.getElementById("studentModal");
   const modalTitle = document.getElementById("modalTitle");
@@ -184,36 +194,55 @@
       .join("");
   }
 
-  async function loadCourseOptions() {
+async function loadCourseOptions() {
     const res = await fetch(`${API_BASE}/courses`, { credentials: "include" });
     const data = await res.json();
-    const courses = data.courses || [];
+    allCourses = data.courses || [];
+
+    const faculties = [...new Set(allCourses.map((c) => c.faculty).filter(Boolean))].sort();
+    document.getElementById("facultyFilter").innerHTML =
+      `<option value="">Select a faculty...</option>` + faculties.map((f) => `<option value="${f}">${f}</option>`).join("");
+  }
+
+  function populateCourseDropdownForFaculty(faculty) {
+    const courses = allCourses.filter((c) => c.faculty === faculty);
     document.getElementById("sCourse").innerHTML = courses.length
       ? `<option value="">Select a course...</option>` + courses.map((c) => `<option value="${c.course_name}">${c.course_name}</option>`).join("")
-      : `<option value="">No courses yet — add one in Courses tab</option>`;
+      : `<option value="">No courses in this faculty yet</option>`;
   }
 
   async function loadStudents() {
     try {
       allStudents = await fetchStudents();
-      renderTable(allStudents);
+      applyFilters();
     } catch (err) {
       tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--danger);">${err.message}</td></tr>`;
     }
   }
 
-  document.getElementById("searchInput").addEventListener("input", (e) => {
-    const q = e.target.value.toLowerCase().trim();
-    const filtered = allStudents.filter(
-      (s) =>
+  function applyFilters() {
+    const faculty = document.getElementById("facultyFilter").value;
+    if (!faculty) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>Select a faculty</h3><p>Choose a faculty above to view its students.</p></div></td></tr>`;
+      return;
+    }
+    const q = document.getElementById("searchInput").value.toLowerCase().trim();
+    const filtered = allStudents.filter((s) => {
+      const matchesFaculty = s.course_faculty === faculty;
+      const matchesSearch =
+        !q ||
         s.name.toLowerCase().includes(q) ||
         s.email.toLowerCase().includes(q) ||
         s.student_reg_no.toLowerCase().includes(q) ||
         String(s.id).includes(q) ||
-        (s.course || "").toLowerCase().includes(q)
-    );
+        (s.course || "").toLowerCase().includes(q);
+      return matchesFaculty && matchesSearch;
+    });
     renderTable(filtered);
-  });
+  }
+
+  document.getElementById("facultyFilter").addEventListener("change", applyFilters);
+  document.getElementById("searchInput").addEventListener("input", applyFilters);
 
   function resetForm() {
     document.getElementById("studentForm").reset();
@@ -222,10 +251,16 @@
   }
 
   function openAddModal() {
+    const faculty = document.getElementById("facultyFilter").value;
+    if (!faculty) {
+      alert("Please select a faculty first — the student will be added under that faculty's courses.");
+      return;
+    }
     resetForm();
     modalTitle.textContent = "Add Student";
     passwordField.style.display = "block";
     document.getElementById("sPassword").required = true;
+    populateCourseDropdownForFaculty(faculty);
     modal.classList.add("open");
   }
 
@@ -236,6 +271,8 @@
     modalTitle.textContent = "Edit Student";
     passwordField.style.display = "none";
     document.getElementById("sPassword").required = false;
+
+    populateCourseDropdownForFaculty(s.course_faculty || document.getElementById("facultyFilter").value);
 
     document.getElementById("studentId").value = s.id;
     document.getElementById("sName").value = s.name;

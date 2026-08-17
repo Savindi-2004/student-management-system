@@ -86,7 +86,7 @@
         <input type="hidden" id="slotId" />
         <div class="field-row">
           <div class="field"><label for="fCourse">Course</label><select id="fCourse" required></select></div>
-          <div class="field"><label for="fSubject">Subject</label><input type="text" id="fSubject" required /></div>
+          <div class="field"><label for="fSubject">Subject (Module)</label><select id="fSubject" required><option value="">Select a course first...</option></select></div>
         </div>
         <div class="field-row">
           <div class="field">
@@ -159,6 +159,24 @@
     document.getElementById("courseFilter").innerHTML = `<option value="">All courses</option>` + opts;
   }
 
+  async function loadModuleOptions(courseId, selectedName) {
+    const subjectSelect = document.getElementById("fSubject");
+    if (!courseId) {
+      subjectSelect.innerHTML = `<option value="">Select a course first...</option>`;
+      return;
+    }
+    subjectSelect.innerHTML = `<option value="">Loading...</option>`;
+    const res = await fetch(`${API_BASE}/courses/${courseId}/modules`, { credentials: "include" });
+    const data = await res.json();
+    const modules = data.modules || [];
+    subjectSelect.innerHTML = modules.length
+      ? `<option value="">Select a module...</option>` + modules.map((m) => `<option value="${m.module_name}">${m.module_name}</option>`).join("")
+      : `<option value="">No modules for this course yet — add some in Courses tab</option>`;
+    if (selectedName) subjectSelect.value = selectedName;
+  }
+
+  document.getElementById("fCourse").addEventListener("change", (e) => loadModuleOptions(e.target.value));
+
   async function loadTeachers() {
     const res = await fetch(`${API_BASE}/teachers`, { credentials: "include" });
     const data = await res.json();
@@ -189,17 +207,18 @@
   document.getElementById("openAddModal").addEventListener("click", () => {
     resetForm();
     document.getElementById("modalTitle").textContent = "Add Lecture Slot";
+    document.getElementById("fSubject").innerHTML = `<option value="">Select a course first...</option>`;
     modal.classList.add("open");
   });
 
-  window.openEditModal = function (id) {
+  window.openEditModal = async function (id) {
     resetForm();
     const s = allSlots.find((x) => x.id === id);
     if (!s) return;
     document.getElementById("modalTitle").textContent = "Edit Lecture Slot";
     document.getElementById("slotId").value = s.id;
     document.getElementById("fCourse").value = s.course_id;
-    document.getElementById("fSubject").value = s.subject_name;
+    await loadModuleOptions(s.course_id, s.subject_name);
     document.getElementById("fDay").value = s.day_of_week;
     document.getElementById("fTeacher").value = s.teacher_id || "";
     document.getElementById("fStart").value = s.start_time ? s.start_time.slice(0, 5) : "";
@@ -207,7 +226,6 @@
     document.getElementById("fVenue").value = s.venue || "";
     modal.classList.add("open");
   };
-
   window.handleDelete = async function (id, name) {
     if (!confirm(`Remove "${name}" from the timetable?`)) return;
     const res = await fetch(`${API_BASE}/timetable/${id}`, { method: "DELETE", credentials: "include" });

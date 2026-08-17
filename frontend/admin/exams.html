@@ -104,7 +104,10 @@
       <form id="scheduleForm">
         <div class="field"><label for="eName">Exam Name</label><input type="text" id="eName" required /></div>
         <div class="field-row">
-          <div class="field"><label for="eCourse">Course / Subject</label><select id="eCourse" required></select></div>
+          <div class="field"><label for="eCourse">Course</label><select id="eCourse" required></select></div>
+          <div class="field"><label for="eSubject">Subject (Module)</label><select id="eSubject"><option value="">Select a course first...</option></select></div>
+        </div>
+        <div class="field-row">
           <div class="field">
             <label for="eType">Exam Type</label>
             <select id="eType" required>
@@ -114,15 +117,13 @@
               <option value="Assignment">Assignment</option>
             </select>
           </div>
-        </div>
-        <div class="field-row">
           <div class="field"><label for="eDate">Date</label><input type="date" id="eDate" /></div>
-          <div class="field"><label for="eTime">Time</label><input type="time" id="eTime" /></div>
         </div>
         <div class="field-row">
+          <div class="field"><label for="eTime">Time</label><input type="time" id="eTime" /></div>
           <div class="field"><label for="eDuration">Duration (minutes)</label><input type="number" id="eDuration" min="1" /></div>
-          <div class="field"><label for="eVenue">Venue (Exam Hall)</label><input type="text" id="eVenue" /></div>
         </div>
+        <div class="field"><label for="eVenue">Venue (Exam Hall)</label><input type="text" id="eVenue" /></div>
       </form>
     </div>
     <div class="modal-foot">
@@ -171,6 +172,22 @@
     document.getElementById("eCourse").innerHTML = allCourses.map((c) => `<option value="${c.id}">${c.course_name}</option>`).join("");
   }
 
+  async function loadModuleDropdown(courseId) {
+    const subjectSelect = document.getElementById("eSubject");
+    if (!courseId) {
+      subjectSelect.innerHTML = `<option value="">Select a course first...</option>`;
+      return;
+    }
+    subjectSelect.innerHTML = `<option value="">lording...</option>`;
+    const res = await fetch(`${API_BASE}/courses/${courseId}/modules`, { credentials: "include" });
+    const data = await res.json();
+    const modules = data.modules || [];
+    subjectSelect.innerHTML = modules.length
+      ? `<option value="">Select a module...</option>` + modules.map((m) => `<option value="${m.id}">${m.module_name}</option>`).join("")
+      : `<option value="">No modules for this course yet</option>`;
+  }
+  document.getElementById("eCourse").addEventListener("change", (e) => loadModuleDropdown(e.target.value));
+
   async function loadSummary() {
     const res = await fetch(`${API_BASE}/exams/summary`, { credentials: "include" });
     const data = await res.json();
@@ -186,8 +203,8 @@
     const body = document.getElementById("examsTableBody");
     body.innerHTML = allExams.length
       ? allExams.map((e) => `
-        <tr>
-          <td>${e.exam_name}</td>
+       <tr>
+          <td>${e.exam_name}${e.module_name ? `<div style="font-size:0.78rem; color:var(--ink-soft); margin-top:2px;">${e.module_name}</div>` : ""}</td>
           <td>${e.course_name}</td>
           <td>${e.exam_type}</td>
           <td>${e.exam_date ? new Date(e.exam_date).toLocaleDateString() : "—"}</td>
@@ -218,6 +235,8 @@
   document.getElementById("openScheduleModal").addEventListener("click", () => {
     document.getElementById("scheduleForm").reset();
     document.getElementById("scheduleMsg").className = "form-msg";
+    const firstCourseId = document.getElementById("eCourse").value;
+    loadModuleDropdown(firstCourseId);
     scheduleModal.classList.add("open");
   });
   function closeScheduleModal() { scheduleModal.classList.remove("open"); }
@@ -231,6 +250,7 @@
     const payload = {
       examName: document.getElementById("eName").value.trim(),
       courseId: document.getElementById("eCourse").value,
+      moduleId: document.getElementById("eSubject").value || null,
       examType: document.getElementById("eType").value,
       examDate: document.getElementById("eDate").value || null,
       examTime: document.getElementById("eTime").value || null,

@@ -6,9 +6,11 @@ async function getAllStudents(req, res) {
   try {
     const [rows] = await pool.query(
       `SELECT s.id, s.student_reg_no, s.dob, s.address, s.contact_no, s.course,
-              s.enrollment_date, u.id AS user_id, u.name, u.email
+              s.enrollment_date, u.id AS user_id, u.name, u.email,
+              c.faculty AS course_faculty
        FROM students s
        JOIN users u ON s.user_id = u.id
+       LEFT JOIN courses c ON c.course_name = s.course
        ORDER BY s.id DESC`
     );
     res.json({ students: rows });
