@@ -73,23 +73,10 @@
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:22px;">
-      <div class="card-head"><h2>Subject-wise Attendance</h2></div>
-      <div class="card-body table-wrap">
-        <table>
-          <thead><tr><th>Subject</th><th>Records</th><th>Attendance %</th></tr></thead>
-          <tbody id="subjectWiseBody"><tr><td colspan="3" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><h2>Attendance History</h2></div>
-      <div class="card-body table-wrap">
-        <table>
-          <thead><tr><th>Date</th><th>Subject</th><th>Status</th><th>Marked By</th></tr></thead>
-          <tbody id="historyBody"><tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">Loading...</td></tr></tbody>
-        </table>
+        <div class="card">
+      <div class="card-head"><h2>Attendance Records</h2></div>
+      <div class="card-body" id="attendanceRecordsBody">
+        <div class="panel-empty">Loading...</div>
       </div>
     </div>
   </main>
@@ -114,7 +101,7 @@
       <button class="btn btn-primary" id="confirmMarkBtn">Mark Present</button>
     </div>
   </div>
-</div>
+</div> 
 
 <script src="../js/student-common.js"></script>
 <script>
@@ -133,32 +120,118 @@
     return `<span class="badge ${cls}">${status}</span>`;
   }
 
-  async function loadSummary() {
+   async function loadSummary() {
     const res = await fetch(`${API_BASE}/attendance/me/summary`, { credentials: "include" });
     const data = await res.json();
     document.getElementById("statOverall").textContent = data.overallPercentage + "%";
     document.getElementById("statPresent").textContent = data.present;
     document.getElementById("statAbsent").textContent = data.absent;
-
-    const body = document.getElementById("subjectWiseBody");
-    body.innerHTML = (data.subjectWise || []).length
-      ? data.subjectWise.map((s) => `<tr><td>${s.subject}</td><td>${s.total}</td><td>${s.percentage}%</td></tr>`).join("")
-      : `<tr><td colspan="3" style="text-align:center; color:var(--ink-soft);">No subject-wise data yet.</td></tr>`;
   }
 
-  async function loadHistory() {
-    const res = await fetch(`${API_BASE}/attendance/me`, { credentials: "include" });
-    const data = await res.json();
-    const body = document.getElementById("historyBody");
-    body.innerHTML = (data.records || []).length
-      ? data.records.map((r) => `
-        <tr>
-          <td>${new Date(r.attendance_date).toLocaleDateString()}</td>
-          <td>${r.subject_name || "—"}</td>
-          <td>${badgeFor(r.status)}</td>
-          <td style="text-transform:capitalize;">${r.marked_by}</td>
-        </tr>`).join("")
-      : `<tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">No attendance recorded yet.</td></tr>`;
+  const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  function toDateOnly(d) {
+    const copy = new Date(d);
+    copy.setHours(0, 0, 0, 0);
+    return copy;
+  }
+
+  // Builds one accordion card per subject: every past weekly lecture date
+  // (since enrolment) is a "session" — marked Present/Late if a record
+  // exists for that date, otherwise automatically shown as Absent.
+  async function loadAttendanceRecords() {
+    const box = document.getElementById("attendanceRecordsBody");
+    try {
+      const [ttRes, recRes, profRes] = await Promise.all([
+        fetch(`${API_BASE}/timetable/mine`, { credentials: "include" }),
+        fetch(`${API_BASE}/attendance/me`, { credentials: "include" }),
+        fetch(`${API_BASE}/students/me/profile`, { credentials: "include" }),
+      ]);
+      const timetable = (await ttRes.json()).timetable || [];
+      const records = (await recRes.json()).records || [];
+      const profile = (await profRes.json()).student;
+
+      if (timetable.length === 0) {
+        box.innerHTML = `<div class="panel-empty">No subjects on your timetable yet.</div>`;
+        return;
+      }
+
+      const today = toDateOnly(new Date());
+      let startDate = profile && profile.enrollment_date ? toDateOnly(profile.enrollment_date) : null;
+      const earliestAllowed = toDateOnly(new Date());
+      earliestAllowed.setDate(earliestAllowed.getDate() - 180); // safety cap: don't look back more than ~6 months
+      if (!startDate || startDate < earliestAllowed) startDate = earliestAllowed;
+
+      // Group timetable slots by subject
+      const slotsBySubject = {};
+      timetable.forEach((slot) => {
+        if (!slotsBySubject[slot.subject_name]) slotsBySubject[slot.subject_name] = [];
+        slotsBySubject[slot.subject_name].push(slot);
+      });
+
+      // Index attendance records by "subject|date"
+      const recordIndex = {};
+      records.forEach((r) => {
+        const key = `${r.subject_name}|${toDateOnly(r.attendance_date).toISOString().split("T")[0]}`;
+        recordIndex[key] = r;
+      });
+
+      const subjectNames = Object.keys(slotsBySubject).sort();
+      box.innerHTML = subjectNames
+        .map((subject, idx) => {
+          const slots = slotsBySubject[subject];
+          const daysForSubject = new Set(slots.map((s) => s.day_of_week));
+
+          // Generate every past occurrence of this subject's weekly day(s)
+          const sessionDates = [];
+          for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
+            if (daysForSubject.has(DAY_NAMES[d.getDay()])) {
+              sessionDates.push(new Date(d));
+            }
+          }
+
+          const sessions = sessionDates.map((date) => {
+            const key = `${subject}|${date.toISOString().split("T")[0]}`;
+            const record = recordIndex[key];
+            return { date, status: record ? record.status : "Absent" };
+          });
+
+          const presentCount = sessions.filter((s) => s.status === "Present" || s.status === "Late").length;
+          const pct = sessions.length > 0 ? Math.round((presentCount / sessions.length) * 100) : 0;
+
+          const rows = sessions.length
+            ? sessions
+                .map((s, i) => `
+                  <tr>
+                    <td>Session ${i + 1}</td>
+                    <td>${s.date.toLocaleDateString()}</td>
+                    <td>${badgeFor(s.status)}</td>
+                  </tr>`)
+                .join("")
+            : `<tr><td colspan="3" style="text-align:center; color:var(--ink-soft);">No sessions yet.</td></tr>`;
+
+          return `
+            <div class="subject-accordion" id="acc-${idx}">
+              <div class="subject-accordion-head" onclick="document.getElementById('acc-${idx}').classList.toggle('open')">
+                <div class="name">${subject}</div>
+                <div class="right">
+                  <div class="pct">${pct}%</div>
+                  <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div class="subject-accordion-body">
+                <table>
+                  <thead><tr><th>Session</th><th>Date</th><th>Status</th></tr></thead>
+                  <tbody>${rows}</tbody>
+                </table>
+              </div>
+            </div>`;
+        })
+        .join("");
+    } catch (err) {
+      console.error(err);
+      box.innerHTML = `<div class="panel-empty">Could not load attendance records.</div>`;
+    }
   }
 
   async function loadTodayLectures() {
@@ -214,10 +287,10 @@
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      closeMarkModal();
+            closeMarkModal();
       await loadTodayLectures();
       await loadSummary();
-      await loadHistory();
+      await loadAttendanceRecords();
     } catch (err) {
       msg.textContent = err.message;
       msg.className = "form-msg error";
@@ -229,7 +302,7 @@
     if (!user) return;
     await loadSummary();
     await loadTodayLectures();
-    await loadHistory();
+    await loadAttendanceRecords();
   })();
 </script>
 </body>

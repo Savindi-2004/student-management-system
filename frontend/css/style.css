@@ -275,6 +275,22 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; }
 .week-tab { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--paper-card); font-size: 0.86rem; font-weight: 600; cursor: pointer; color: var(--ink-soft); }
 .week-tab.active { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
 
+/* Subject attendance accordion (student Attendance page) */
+.subject-accordion { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+.subject-accordion:last-child { margin-bottom: 0; }
+.subject-accordion-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 16px 18px; cursor: pointer; background: var(--paper-card); user-select: none;
+}
+.subject-accordion-head:hover { background: #faf9f5; }
+.subject-accordion-head .name { font-weight: 600; color: var(--navy-900); font-size: 0.96rem; }
+.subject-accordion-head .right { display: flex; align-items: center; gap: 14px; }
+.subject-accordion-head .pct { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--navy-900); }
+.subject-accordion-head .chevron { width: 18px; height: 18px; color: var(--ink-soft); transition: transform 0.15s ease; flex-shrink: 0; }
+.subject-accordion.open .chevron { transform: rotate(180deg); }
+.subject-accordion-body { display: none; border-top: 1px solid var(--border); }
+.subject-accordion.open .subject-accordion-body { display: block; }
+
 .card { background: var(--paper-card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .card-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
 .card-head h2 { font-size: 1.1rem; }
